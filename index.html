@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Preprocessing: Complete Mastery Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --ink: #0d0d12;
+  --paper: #f9f7f2;
+  --accent: #e8452c;
+  --accent2: #2563eb;
+  --accent3: #16a34a;
+  --accent4: #9333ea;
+  --gold: #d97706;
+  --code-bg: #1a1a2e;
+  --card: #ffffff;
+  --muted: #64748b;
+  --border: #e2e0d8;
+  --highlight: #fef3c7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7}
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(249,247,242,0.97);backdrop-filter:blur(8px);border-bottom:2px solid var(--ink);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:56px;overflow-x:auto;white-space:nowrap}
+.nav a{font-size:.78rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:var(--muted);padding:.3rem .6rem;border-radius:4px;transition:all .2s}
+.nav a:hover,.nav a.active{color:var(--accent);background:rgba(232,69,44,.08)}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900;color:var(--ink);margin-right:1rem;flex-shrink:0}
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:6rem 2rem 4rem;background:linear-gradient(135deg,#0d0d12 0%,#1a1a2e 50%,#0d0d12 100%);color:white;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h60v60H0z' fill='none'/%3E%3Cpath d='M30 0v60M0 30h60' stroke='rgba(255,255,255,.03)' stroke-width='1'/%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:var(--accent);color:white;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.4rem 1rem;border-radius:2px;margin-bottom:1.5rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,6vw,5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;max-width:900px}
+.hero h1 span{color:var(--accent)}
+.hero p{font-size:1.15rem;color:rgba(255,255,255,.7);max-width:640px;margin-bottom:2.5rem}
+.hero-stats{display:flex;gap:2rem;flex-wrap:wrap;justify-content:center}
+.hero-stat{text-align:center}
+.hero-stat .num{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:var(--accent)}
+.hero-stat .label{font-size:.75rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em}
+/* SECTIONS */
+.section{padding:5rem 2rem;max-width:1100px;margin:0 auto}
+.section-header{margin-bottom:3rem}
+.section-tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1.5px solid var(--accent);padding:.25rem .75rem;border-radius:2px;margin-bottom:1rem}
+.section h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;line-height:1.15;margin-bottom:.75rem}
+.section-desc{color:var(--muted);font-size:1.05rem;max-width:600px}
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-top:2rem}
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:1.75rem;transition:all .25s;cursor:default}
+.card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 12px 32px rgba(0,0,0,.1)}
+.card-icon{font-size:2rem;margin-bottom:1rem}
+.card h3{font-size:1.05rem;font-weight:700;margin-bottom:.5rem}
+.card p{font-size:.9rem;color:var(--muted)}
+/* CONCEPT BOXES */
+.concept{background:var(--highlight);border-left:4px solid var(--gold);padding:1.25rem 1.5rem;border-radius:0 8px 8px 0;margin:1.5rem 0}
+.concept-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.info-box{background:#eff6ff;border-left:4px solid var(--accent2);padding:1.25rem 1.5rem;border-radius:0 8px 8px 0;margin:1.5rem 0}
+.warn-box{background:#fff7ed;border-left:4px solid var(--gold);padding:1.25rem 1.5rem;border-radius:0 8px 8px 0;margin:1.5rem 0}
+.success-box{background:#f0fdf4;border-left:4px solid var(--accent3);padding:1.25rem 1.5rem;border-radius:0 8px 8px 0;margin:1.5rem 0}
+/* CODE BLOCKS */
+.code-block{background:var(--code-bg);border-radius:10px;padding:1.5rem;margin:1.5rem 0;overflow-x:auto;position:relative}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#e2e8f0}
+.code-label{position:absolute;top:.5rem;right:.75rem;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#475569;background:rgba(255,255,255,.05);padding:.2rem .5rem;border-radius:3px}
+.keyword{color:#c792ea}
+.string{color:#c3e88d}
+.comment{color:#546e7a;font-style:italic}
+.number{color:#f78c6c}
+.func{color:#82aaff}
+.builtin{color:#ffcb6b}
+/* DIFFICULTY BADGES */
+.diff{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .6rem;border-radius:3px;margin-bottom:.75rem}
+.diff-easy{background:#dcfce7;color:#166534}
+.diff-med{background:#fef3c7;color:#92400e}
+.diff-hard{background:#fee2e2;color:#991b1b}
+.diff-expert{background:#ede9fe;color:#6d28d9}
+/* TABS */
+.tabs{margin:2rem 0}
+.tab-btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:0;border-bottom:2px solid var(--border)}
+.tab-btn{padding:.6rem 1.2rem;font-size:.85rem;font-weight:600;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-pane{display:none;padding:1.5rem 0}
+.tab-pane.active{display:block}
+/* TIMELINE */
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{content:'';position:absolute;left:.75rem;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:2rem}
+.tl-dot{position:absolute;left:-1.75rem;top:.3rem;width:1rem;height:1rem;border-radius:50%;background:var(--accent);border:2px solid white;box-shadow:0 0 0 2px var(--accent)}
+.tl-content{background:white;border:1.5px solid var(--border);border-radius:8px;padding:1.25rem}
+.tl-content h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+.tl-content p{font-size:.87rem;color:var(--muted)}
+/* COMPARISON TABLE */
+.compare-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.88rem}
+.compare-table th{background:var(--ink);color:white;padding:.75rem 1rem;text-align:left;font-weight:600}
+.compare-table td{padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+.compare-table tr:nth-child(even) td{background:#f8f6f0}
+.compare-table tr:hover td{background:var(--highlight)}
+/* INTERACTIVE ELEMENTS */
+.quiz-box{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:2rem;margin:2rem 0}
+.quiz-box h4{font-size:1rem;font-weight:700;margin-bottom:1.25rem}
+.quiz-option{display:block;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:8px;margin-bottom:.5rem;cursor:pointer;transition:all .2s;font-size:.9rem}
+.quiz-option:hover{border-color:var(--accent2);background:#eff6ff}
+.quiz-option.correct{border-color:var(--accent3);background:#f0fdf4;color:#166534;font-weight:600}
+.quiz-option.wrong{border-color:var(--accent);background:#fff1f2;color:#991b1b}
+.quiz-btn{background:var(--ink);color:white;border:none;padding:.6rem 1.5rem;border-radius:6px;cursor:pointer;font-size:.88rem;font-weight:600;margin-top:.75rem;transition:all .2s}
+.quiz-btn:hover{background:var(--accent)}
+/* CHART CONTAINER */
+.chart-wrap{background:white;border:1.5px solid var(--border);border-radius:12px;padding:1.5rem;margin:1.5rem 0}
+.chart-wrap h4{font-size:.9rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+/* CASE STUDY */
+.case-study{background:white;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin:1.5rem 0}
+.cs-header{background:var(--ink);color:white;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:.75rem}
+.cs-icon{font-size:1.5rem}
+.cs-title{font-size:1rem;font-weight:700}
+.cs-sub{font-size:.75rem;color:rgba(255,255,255,.6);margin-top:.15rem}
+.cs-body{padding:1.5rem}
+.cs-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.cs-cell{background:#f8f6f0;border-radius:6px;padding:1rem}
+.cs-cell h5{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem}
+/* PROGRESS BAR */
+.progress{background:#e2e8f0;border-radius:999px;height:8px;margin:.25rem 0}
+.progress-fill{height:100%;border-radius:999px;background:var(--accent);transition:width .8s ease}
+/* INTERACTIVE MISSING VALUES DEMO */
+.demo-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:1rem 0}
+.demo-cell{height:40px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;transition:all .3s;cursor:default}
+.cell-ok{background:#d1fae5;color:#065f46}
+.cell-miss{background:#fce7f3;color:#9d174d;animation:pulse2 2s infinite}
+.cell-filled{background:#dbeafe;color:#1e40af}
+@keyframes pulse2{0%,100%{opacity:1}50%{opacity:.5}}
+/* OUTLIER VIZ */
+.dot-plot{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:1rem;background:#f8f6f0;border-radius:8px;margin:1rem 0}
+.dot{width:12px;height:12px;border-radius:50%;transition:all .3s}
+.dot-normal{background:var(--accent2)}
+.dot-outlier{background:var(--accent);width:18px;height:18px;box-shadow:0 0 8px rgba(232,69,44,.5)}
+.dot-removed{background:#e2e8f0;opacity:.3}
+/* CHECKLIST */
+.checklist{list-style:none;margin:1rem 0}
+.checklist li{padding:.5rem .5rem .5rem 2rem;position:relative;border-bottom:1px solid var(--border);font-size:.9rem}
+.checklist li::before{content:'✓';position:absolute;left:.5rem;color:var(--accent3);font-weight:700}
+/* STEP INDICATOR */
+.steps{display:flex;gap:0;margin:2rem 0;overflow-x:auto}
+.step{flex:1;min-width:100px;text-align:center;position:relative}
+.step::after{content:'';position:absolute;right:0;top:1.5rem;width:100%;height:2px;background:var(--border);z-index:0}
+.step:last-child::after{display:none}
+.step-num{width:3rem;height:3rem;border-radius:50%;background:var(--ink);color:white;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;font-size:.9rem;position:relative;z-index:1}
+.step-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+/* ANALOGY BOX */
+.analogy{background:linear-gradient(135deg,#1a1a2e,#2d2d44);color:white;border-radius:12px;padding:1.75rem;margin:1.5rem 0}
+.analogy-tag{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,200,100,.8);margin-bottom:.5rem}
+.analogy h4{font-size:1.05rem;font-weight:700;margin-bottom:.75rem;color:var(--highlight)}
+/* ADV-DISADV */
+.adv-disadv{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}
+.adv{background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:1.25rem}
+.disadv{background:#fff1f2;border:1.5px solid #fca5a5;border-radius:8px;padding:1.25rem}
+.adv h5{color:#166534;font-size:.85rem;font-weight:700;margin-bottom:.5rem}
+.disadv h5{color:#991b1b;font-size:.85rem;font-weight:700;margin-bottom:.5rem}
+.adv li,.disadv li{font-size:.83rem;margin-left:1rem;margin-bottom:.25rem;color:var(--ink)}
+/* FORMULA */
+.formula{background:#1a1a2e;color:#c3e88d;font-family:'JetBrains Mono',monospace;font-size:.9rem;padding:1rem 1.5rem;border-radius:8px;margin:1rem 0;text-align:center}
+/* SEPARATOR */
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:4rem 0}
+/* LEVEL BADGE */
+.level-pills{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+.level-pill{font-size:.72rem;font-weight:700;padding:.25rem .75rem;border-radius:999px;letter-spacing:.06em}
+.l1{background:#dbeafe;color:#1e40af}
+.l2{background:#fef3c7;color:#92400e}
+.l3{background:#fee2e2;color:#991b1b}
+.l4{background:#ede9fe;color:#6d28d9}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--paper)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+/* STICKY SECTION TITLE */
+.sticky-title{position:sticky;top:56px;z-index:50;background:rgba(249,247,242,.97);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:.75rem 2rem;font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;display:flex;align-items:center;gap:.75rem}
+.sticky-title span{color:var(--accent)}
+/* REAL WORLD TAG */
+.rw-tag{display:inline-block;background:#fef3c7;color:#92400e;font-size:.68rem;font-weight:700;padding:.15rem .5rem;border-radius:3px;text-transform:uppercase;letter-spacing:.08em}
+/* INTERACTIVE BUTTONS */
+.btn{padding:.6rem 1.4rem;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--accent);color:white}
+.btn-primary:hover{background:#c73a22}
+.btn-outline{background:transparent;border:2px solid var(--ink);color:var(--ink)}
+.btn-outline:hover{background:var(--ink);color:white}
+/* FLOAT-IN */
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:none}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .cards{grid-template-columns:1fr}
+  .cs-row,.adv-disadv{grid-template-columns:1fr}
+  .steps{gap:.5rem}
+  .step-num{width:2.2rem;height:2.2rem;font-size:.75rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="nav">
+  <span class="nav-brand">DataPrep</span>
+  <a href="#intro" class="active">Intro</a>
+  <a href="#types">Data Types</a>
+  <a href="#pipeline">Pipeline</a>
+  <a href="#missing">Missing Values</a>
+  <a href="#outliers">Outliers</a>
+  <a href="#encoding">Encoding</a>
+  <a href="#scaling">Scaling</a>
+  <a href="#duplicates">Duplicates</a>
+  <a href="#transform">Transform</a>
+  <a href="#sanity">Sanity Checks</a>
+  <a href="#casestudy">Case Studies</a>
+  <a href="#code">Code Lab</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Complete Mastery Course</div>
+  <h1>Data <span>Preprocessing</span><br>From Zero to Expert</h1>
+  <p>Everything from layman-friendly analogies to production-grade ML pipelines. Master the skill that takes 80% of a data scientist's time.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">12</div><div class="label">Core Topics</div></div>
+    <div class="hero-stat"><div class="num">20+</div><div class="label">Code Examples</div></div>
+    <div class="hero-stat"><div class="num">5</div><div class="label">Real Cases</div></div>
+    <div class="hero-stat"><div class="num">4</div><div class="label">Difficulty Levels</div></div>
+    <div class="hero-stat"><div class="num">8</div><div class="label">Interactive Charts</div></div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 1: INTRO ==================== -->
+<div class="sticky-title" id="intro"><span>01</span> Introduction to Data Preprocessing</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Foundation</div>
+    <h2>Why Clean Data is the Real Secret Weapon</h2>
+    <p class="section-desc">Before any algorithm, before any model — the data must be clean, consistent, and ready. This is the foundation everything is built upon.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-tag">🍳 Cooking Analogy — For Absolute Beginners</div>
+    <h4>Data Preprocessing = Meal Prep Before Cooking</h4>
+    <p>Imagine you're cooking a biryani. Would you throw unwashed rice, random spices in wrong quantities, and spoiled vegetables directly into the pot? Of course not! You <strong>wash the rice</strong> (remove dirty data), <strong>measure spices precisely</strong> (normalize values), <strong>check freshness</strong> (validate data), and <strong>chop uniformly</strong> (standardize formats). Data preprocessing is exactly this — preparing your ingredients before cooking begins.</p>
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="card-icon">🎯</div><h3>Improved Accuracy</h3><p>Clean data leads to <strong>20–40% better model performance</strong>. Garbage in = garbage out.</p></div>
+    <div class="card"><div class="card-icon">⚡</div><h3>Faster Training</h3><p>Preprocessed data helps algorithms converge <strong>2–5× faster</strong> during model training.</p></div>
+    <div class="card"><div class="card-icon">🌍</div><h3>Better Generalization</h3><p>Models on clean data generalize <strong>30% better</strong> to new, unseen real-world data.</p></div>
+    <div class="card"><div class="card-icon">💰</div><h3>Cost Savings</h3><p>A single data quality issue can cost organizations <strong>millions</strong>. Prevention is cheaper than cure.</p></div>
+    <div class="card"><div class="card-icon">📊</div><h3>Meaningful Insights</h3><p>Clean data ensures your analysis <strong>reflects reality</strong>, not data collection errors or artifacts.</p></div>
+    <div class="card"><div class="card-icon">⚙️</div><h3>Algorithm Compatibility</h3><p>Most ML algorithms <strong>cannot handle</strong> missing values, text, or inconsistent formats.</p></div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-label">Key Statistic</div>
+    <strong>Data scientists spend 60–80% of their time on data cleaning</strong>, not on building models. Mastering this single skill makes you the most valuable person in any data team.
+  </div>
+
+  <h3 style="margin:2rem 0 1rem;font-size:1.2rem;font-weight:700">Real-World Consequences of Bad Data</h3>
+  <div class="cards">
+    <div class="case-study">
+      <div class="cs-header"><span class="cs-icon">🚀</span><div><div class="cs-title">NASA Mars Climate Orbiter, 1999</div><div class="cs-sub">$327.6 Million Loss</div></div></div>
+      <div class="cs-body"><p style="font-size:.88rem">A <strong>unit conversion error</strong> (imperial vs metric) caused the spacecraft to enter Mars atmosphere at wrong angle and disintegrate. One team used pounds-force·seconds, another used newton-seconds. <em>Data preprocessing would have caught this inconsistency.</em></p></div>
+    </div>
+    <div class="case-study">
+      <div class="cs-header"><span class="cs-icon">💊</span><div><div class="cs-title">Healthcare Misdiagnosis</div><div class="cs-sub">Patient Safety Risk</div></div></div>
+      <div class="cs-body"><p style="font-size:.88rem">Missing patient data in electronic health records led to incorrect treatment recommendations. A missing allergy field meant a patient received contraindicated medication. <em>Missing value handling is life-critical in healthcare ML.</em></p></div>
+    </div>
+    <div class="case-study">
+      <div class="cs-header"><span class="cs-icon">📈</span><div><div class="cs-title">Financial Trading Algorithm</div><div class="cs-sub">Millions Lost in Minutes</div></div></div>
+      <div class="cs-body"><p style="font-size:.88rem">Incorrect price data (an extra zero in a stock price) caused automated trading systems to execute millions of wrong orders within seconds before humans could intervene. <em>Outlier detection and sanity checks are essential.</em></p></div>
+    </div>
+  </div>
+
+  <h3 style="margin:2rem 0 1rem;font-size:1.2rem;font-weight:700">The 60/80 Rule — Time Distribution in Data Science</h3>
+  <div class="chart-wrap">
+    <h4>Where Data Scientists Actually Spend Their Time</h4>
+    <canvas id="timeChart" height="200"></canvas>
+  </div>
+
+  <!-- QUIZ 1 -->
+  <div class="quiz-box">
+    <h4>🧠 Quick Check: Why can't machine learning algorithms use raw categorical data directly?</h4>
+    <label class="quiz-option" id="q1a" onclick="checkQ('q1a','correct','q1')">Because ML algorithms are fundamentally mathematical, they need numbers to compute equations like y = mx + b.</label>
+    <label class="quiz-option" id="q1b" onclick="checkQ('q1b','wrong','q1')">Because categorical data takes too much memory storage.</label>
+    <label class="quiz-option" id="q1c" onclick="checkQ('q1c','wrong','q1')">Because categorical data is always incorrect and should be deleted.</label>
+    <div id="q1-fb" style="margin-top:.75rem;font-size:.88rem;display:none;color:#166534;font-weight:500">✓ Exactly! ML models are mathematical functions — you can't multiply "cat" × 0.5. Data must be numbers.</div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 2: DATA TYPES ==================== -->
+<div class="sticky-title" id="types"><span>02</span> Types of Data</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Fundamentals</div>
+    <h2>Understanding Data: The Four Kingdoms</h2>
+    <p class="section-desc">Before preprocessing, you must identify what kind of data you have. Different types require completely different treatment strategies.</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab-btns">
+      <button class="tab-btn active" onclick="openTab(event,'t-num')">🔢 Numerical</button>
+      <button class="tab-btn" onclick="openTab(event,'t-cat')">🏷️ Categorical</button>
+      <button class="tab-btn" onclick="openTab(event,'t-date')">📅 Date/Time</button>
+      <button class="tab-btn" onclick="openTab(event,'t-mixed')">🔀 Mixed</button>
+    </div>
+    <div id="t-num" class="tab-pane active">
+      <h3 style="margin-bottom:.75rem;font-weight:700">Numerical Data</h3>
+      <p style="margin-bottom:1rem;color:var(--muted)">Numbers you can do math with. The native language of ML algorithms.</p>
+      <div class="cards">
+        <div class="card"><h3>Continuous</h3><p>Any value, including decimals.<br><strong>Examples:</strong> Temperature 23.5°C, Price ₹499.99, Height 5.7ft, Salary ₹45,000.50</p></div>
+        <div class="card"><h3>Discrete</h3><p>Countable, integer values only.<br><strong>Examples:</strong> Number of children: 0,1,2,3; Dependents: 0,1,2,3+; Reviews: 100, 500</p></div>
+        <div class="card"><h3>Interval</h3><p>Meaningful intervals, no true zero.<br><strong>Examples:</strong> Temperature °C (0° ≠ no temp), IQ Score 120, Year 2024</p></div>
+        <div class="card"><h3>Ratio</h3><p>Meaningful zero point.<br><strong>Examples:</strong> Weight 0kg = nothing, Income ₹0 = no income, Age 0 = newborn</p></div>
+      </div>
+      <div class="analogy" style="margin-top:1.5rem">
+        <div class="analogy-tag">🏏 Cricket Analogy</div>
+        <h4>Numerical data is like cricket scores</h4>
+        <p>Runs (0 means literally zero runs), strike rate (ratio), over number (discrete), average (continuous) — you can add, subtract, find the mean, and rank players mathematically.</p>
+      </div>
+    </div>
+    <div id="t-cat" class="tab-pane">
+      <h3 style="margin-bottom:.75rem;font-weight:700">Categorical Data</h3>
+      <p style="margin-bottom:1rem;color:var(--muted)">Labels and groups that classify observations. Must be encoded before ML use.</p>
+      <table class="compare-table">
+        <tr><th>Type</th><th>Has Order?</th><th>Examples</th><th>Best Encoding</th></tr>
+        <tr><td><strong>Nominal</strong></td><td>❌ No</td><td>Color, Country, Gender, App Category</td><td>One-Hot Encoding</td></tr>
+        <tr><td><strong>Ordinal</strong></td><td>✅ Yes</td><td>Size (S/M/L/XL), Rating (Poor→Excellent), Education level</td><td>Ordinal Encoding</td></tr>
+        <tr><td><strong>Binary</strong></td><td>±</td><td>Yes/No, True/False, Free/Paid, Male/Female</td><td>Simple 0/1 Encoding</td></tr>
+      </table>
+      <div class="warn-box">
+        <strong>⚠️ Common Mistake:</strong> Using Label Encoding on <em>nominal</em> data (like City names) implies false ordering — it tells the model "Mumbai (3) is greater than Delhi (1)" which is meaningless and harmful!
+      </div>
+    </div>
+    <div id="t-date" class="tab-pane">
+      <h3 style="margin-bottom:.75rem;font-weight:700">Date/Time Data</h3>
+      <p style="margin-bottom:1rem;color:var(--muted)">Temporal information rich with patterns — seasons, trends, business cycles.</p>
+      <div class="code-block">
+        <div class="code-label">Python — Feature Extraction</div>
+        <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+df[<span class="string">'date'</span>] = pd.to_datetime(df[<span class="string">'date'</span>])
+
+<span class="comment"># Extract rich features from one date column</span>
+df[<span class="string">'year'</span>]       = df[<span class="string">'date'</span>].dt.year
+df[<span class="string">'month'</span>]      = df[<span class="string">'date'</span>].dt.month
+df[<span class="string">'day_of_week'</span>] = df[<span class="string">'date'</span>].dt.dayofweek  <span class="comment"># 0=Mon, 6=Sun</span>
+df[<span class="string">'is_weekend'</span>]  = df[<span class="string">'date'</span>].dt.dayofweek >= <span class="number">5</span>
+df[<span class="string">'quarter'</span>]    = df[<span class="string">'date'</span>].dt.quarter
+df[<span class="string">'hour'</span>]       = df[<span class="string">'date'</span>].dt.hour
+
+<span class="comment"># Cyclical encoding for hour (midnight and 23:00 are close!)</span>
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+df[<span class="string">'hour_sin'</span>] = np.sin(<span class="number">2</span> * np.pi * df[<span class="string">'hour'</span>]/<span class="number">24</span>)
+df[<span class="string">'hour_cos'</span>] = np.cos(<span class="number">2</span> * np.pi * df[<span class="string">'hour'</span>]/<span class="number">24</span>)</pre>
+      </div>
+      <div class="success-box"><strong>💡 One date → 8+ features!</strong> A single "order_date" column can yield year, month, day, weekday, quarter, holiday flag, days since last purchase, etc. — all valuable for ML.</div>
+    </div>
+    <div id="t-mixed" class="tab-pane">
+      <h3 style="margin-bottom:.75rem;font-weight:700">Mixed Data Types — The Messy Reality</h3>
+      <p style="margin-bottom:1rem;color:var(--muted)">Real datasets often have columns mixing numbers with text. This is very common in scraped or user-entered data.</p>
+      <table class="compare-table">
+        <tr><th>Raw Mixed Value</th><th>Problem</th><th>Solution</th><th>Clean Output</th></tr>
+        <tr><td>"8GB RAM"</td><td>Number stuck in text</td><td>Regex extract</td><td>8 (float)</td></tr>
+        <tr><td>"₹1,500"</td><td>Currency symbol + comma</td><td>Strip & convert</td><td>1500.0 (float)</td></tr>
+        <tr><td>"15%"</td><td>% sign in string</td><td>Strip & divide</td><td>0.15 (float)</td></tr>
+        <tr><td>"3+" (Dependents)</td><td>Plus sign prevents int conversion</td><td>Replace "+" → ""</td><td>3 (int)</td></tr>
+        <tr><td>"$2.99" / "Free"</td><td>Mixed price formats</td><td>Replace + convert</td><td>2.99 / 0.0 (float)</td></tr>
+      </table>
+      <div class="code-block">
+        <div class="code-label">Google Play Store — Real Code</div>
+        <pre><span class="comment"># From the actual notebook: fixing Price column</span>
+inp0[<span class="string">'Price'</span>] = inp0[<span class="string">'Price'</span>].astype(str)
+inp0[<span class="string">'Price'</span>] = inp0[<span class="string">'Price'</span>].replace(<span class="string">'Free'</span>, <span class="string">'0'</span>)
+inp0[<span class="string">'Price'</span>] = inp0[<span class="string">'Price'</span>].str.replace(<span class="string">'$'</span>, <span class="string">''</span>, regex=<span class="keyword">False</span>).astype(float)
+
+<span class="comment"># Fixing Installs column: "10,000+" → 10000</span>
+<span class="keyword">def</span> <span class="func">clean_installs</span>(installs):
+    <span class="keyword">if</span> isinstance(installs, str):
+        <span class="keyword">return</span> int(installs.replace(<span class="string">"+"</span>, <span class="string">""</span>).replace(<span class="string">","</span>, <span class="string">""</span>))
+    <span class="keyword">return</span> installs
+
+inp0[<span class="string">"Installs"</span>] = inp0[<span class="string">"Installs"</span>].apply(clean_installs)</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-wrap" style="margin-top:2rem">
+    <h4>Data Types Distribution — Google Play Store Dataset Example</h4>
+    <canvas id="dataTypesChart" height="180"></canvas>
+  </div>
+</section>
+
+<!-- ==================== SECTION 3: PIPELINE ==================== -->
+<div class="sticky-title" id="pipeline"><span>03</span> The Preprocessing Pipeline</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Architecture</div>
+    <h2>The 10-Step Data Preprocessing Pipeline</h2>
+    <p class="section-desc">A structured, sequential workflow that transforms raw messy data into ML-ready gold.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num" style="background:#e8452c">1</div><div class="step-label">Inspect</div></div>
+    <div class="step"><div class="step-num" style="background:#d97706">2</div><div class="step-label">Fix Rows</div></div>
+    <div class="step"><div class="step-num" style="background:#16a34a">3</div><div class="step-label">Fix Types</div></div>
+    <div class="step"><div class="step-num" style="background:#2563eb">4</div><div class="step-label">Missing Val</div></div>
+    <div class="step"><div class="step-num" style="background:#9333ea">5</div><div class="step-label">Duplicates</div></div>
+    <div class="step"><div class="step-num" style="background:#e8452c">6</div><div class="step-label">Outliers</div></div>
+    <div class="step"><div class="step-num" style="background:#d97706">7</div><div class="step-label">Encode</div></div>
+    <div class="step"><div class="step-num" style="background:#16a34a">8</div><div class="step-label">Scale</div></div>
+    <div class="step"><div class="step-num" style="background:#2563eb">9</div><div class="step-label">Transform</div></div>
+    <div class="step"><div class="step-num" style="background:#9333ea">10</div><div class="step-label">Sanity Check</div></div>
+  </div>
+
+  <h3 style="margin:2rem 0 1rem;font-weight:700">Checklist: Fixing Rows & Columns (upGrad Framework)</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+    <div>
+      <h4 style="font-size:.9rem;font-weight:700;color:var(--accent);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em">Rows Checklist</h4>
+      <ul class="checklist">
+        <li>Delete summary rows: Total, Subtotal rows</li>
+        <li>Delete incorrect rows: Header rows, Footer rows</li>
+        <li>Delete extra rows: Column numbers, blank rows, page numbers</li>
+        <li>Identify and remove shifted/misaligned rows</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="font-size:.9rem;font-weight:700;color:var(--accent2);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em">Columns Checklist</h4>
+      <ul class="checklist">
+        <li>Merge columns for unique identifiers (State + City → Address)</li>
+        <li>Split columns for granularity (Address → State, City)</li>
+        <li>Add/rename columns consistently (no mixed case, abbreviations)</li>
+        <li>Delete unnecessary columns</li>
+        <li>Align misaligned column data</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="code-block" style="margin-top:2rem">
+    <div class="code-label">Level 1 — Basic Inspection</div>
+    <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+df = pd.read_csv(<span class="string">'data.csv'</span>)
+
+<span class="comment"># Essential first steps for EVERY dataset</span>
+print(df.shape)          <span class="comment"># (rows, columns)</span>
+print(df.head())         <span class="comment"># First 5 rows</span>
+print(df.info())         <span class="comment"># Data types + null counts</span>
+print(df.describe())     <span class="comment"># Statistical summary</span>
+print(df.dtypes)         <span class="comment"># Column data types</span>
+print(df.isnull().sum()) <span class="comment"># Missing values per column</span></pre>
+  </div>
+</section>
+
+<!-- ==================== SECTION 4: MISSING VALUES ==================== -->
+<div class="sticky-title" id="missing"><span>04</span> Handling Missing Values</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Critical Step</div>
+    <h2>Missing Values: The Silent Model Killer</h2>
+    <p class="section-desc">Missing data can silently destroy your model's performance. Learn to detect, understand, and strategically handle every missing value.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-tag">📝 Form Analogy — For Beginners</div>
+    <h4>Think of it like an online registration form</h4>
+    <p>When you fill a bank loan form, <strong>Name and Phone</strong> are mandatory (marked *) — leaving them blank stops submission. But <strong>Second email</strong> is optional. When thousands of people fill it, the optional fields are often left blank. In the database, those blank cells appear as <strong>NaN (Not a Number)</strong> — the computer's way of saying "no value here." ML algorithms can't multiply or add NaN: <em>5 × NaN = ??? </em></p>
+  </div>
+
+  <!-- INTERACTIVE MISSING VALUES DEMO -->
+  <h3 style="margin:2rem 0 .75rem;font-weight:700">Interactive Demo: What Missing Data Looks Like</h3>
+  <p style="margin-bottom:1rem;color:var(--muted);font-size:.9rem">This represents a 6-column dataset. Green = data present, Pink/pulsing = NaN missing value. Click "Fill Missing" to see imputation in action.</p>
+  <div id="demo-grid" class="demo-grid"></div>
+  <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="fillMissing()">Fill Missing Values</button>
+    <button class="btn btn-outline" onclick="resetGrid()">Reset</button>
+    <span style="font-size:.82rem;color:var(--muted);padding:.5rem 0">Missing: <strong id="miss-count">0</strong> cells (<strong id="miss-pct">0</strong>%)</span>
+  </div>
+
+  <div class="sep" style="margin:2rem 0"></div>
+
+  <h3 style="font-weight:700;margin-bottom:1rem">Why Missing Values Break ML Algorithms</h3>
+  <div class="info-box">
+    <strong>The Math Problem:</strong> Consider the equation: <code style="background:rgba(0,0,0,.06);padding:.1rem .3rem;border-radius:3px">y = 0.3×age + 0.5×income + 0.2×credit_score</code><br>
+    If <code style="background:rgba(0,0,0,.06);padding:.1rem .3rem;border-radius:3px">income = NaN</code>, then <code style="background:rgba(0,0,0,.06);padding:.1rem .3rem;border-radius:3px">y = 0.3×30 + 0.5×NaN + 0.2×750 = NaN</code>. The entire prediction collapses!
+  </div>
+
+  <h3 style="font-weight:700;margin:2rem 0 1rem">Detection: Finding Missing Values with Pandas</h3>
+  <div class="level-pills">
+    <span class="level-pill l1">Level 1: Easy</span>
+  </div>
+  <div class="code-block">
+    <div class="code-label">Pandas Detection</div>
+    <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> seaborn <span class="keyword">as</span> sns
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+
+df = pd.read_csv(<span class="string">'loan_data.csv'</span>)
+
+<span class="comment"># Method 1: Count missing per column</span>
+print(df.isnull().sum())
+
+<span class="comment"># Method 2: Percentage of missing per column</span>
+missing_pct = (df.isnull().sum() / df.shape[<span class="number">0</span>]) * <span class="number">100</span>
+print(missing_pct.sort_values(ascending=<span class="keyword">False</span>))
+
+<span class="comment"># Method 3: Total missing in entire dataset</span>
+total_missing = df.isnull().sum().sum()
+total_cells = df.shape[<span class="number">0</span>] * df.shape[<span class="number">1</span>]
+print(f<span class="string">"Overall missing: {total_missing/total_cells*100:.2f}%"</span>)
+
+<span class="comment"># Method 4: Visualize with heatmap</span>
+sns.heatmap(df.isnull(), cbar=<span class="keyword">True</span>, cmap=<span class="string">'viridis'</span>)
+plt.title(<span class="string">'Missing Value Heatmap (White=Missing)'</span>)
+plt.show()</pre>
+  </div>
+
+  <h3 style="font-weight:700;margin:2rem 0 1rem">Strategic Decision Framework</h3>
+  <div class="chart-wrap">
+    <h4>Decision Tree: What to Do With Missing Values?</h4>
+    <canvas id="missingDecisionChart" height="200"></canvas>
+  </div>
+
+  <div class="timeline" style="margin-top:1.5rem">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>📊 Check Overall Missing Percentage</h4>
+        <p>If &gt;50% of the <em>entire dataset</em> is missing → the dataset is too corrupted, avoid it. If &lt;50% → proceed with treatment.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>🗂️ Check Column-Level Missing</h4>
+        <p>If a specific column has &gt;50% missing → consider <strong>dropping the column</strong> (unless it's a critical feature). If &lt;50% → impute the missing values.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>🔍 Understand WHY Values Are Missing</h4>
+        <p><strong>MCAR</strong> (Missing Completely at Random): No pattern, safe to delete rows. <strong>MAR</strong> (Missing at Random): Pattern depends on other columns, impute carefully. <strong>MNAR</strong> (Missing Not at Random): The absence itself is informative — create an indicator column.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>⚙️ Choose Your Imputation Strategy</h4>
+        <p>For <strong>numerical</strong>: use mean, median, or model-based imputation. For <strong>categorical</strong>: use mode (most frequent) or forward/backward fill. For <strong>time-series</strong>: forward-fill or interpolation.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-weight:700;margin:2rem 0 1rem">All Imputation Methods: Code Examples</h3>
+
+  <div class="tabs">
+    <div class="tab-btns">
+      <button class="tab-btn active" onclick="openTab(event,'mv1')">Delete</button>
+      <button class="tab-btn" onclick="openTab(event,'mv2')">Mode Fill</button>
+      <button class="tab-btn" onclick="openTab(event,'mv3')">Mean/Median</button>
+      <button class="tab-btn" onclick="openTab(event,'mv4')">Fwd/Bwd Fill</button>
+      <button class="tab-btn" onclick="openTab(event,'mv5')">SimpleImputer</button>
+    </div>
+    <div id="mv1" class="tab-pane active">
+      <div class="diff diff-easy">Easy — Level 1</div>
+      <div class="code-block">
+        <div class="code-label">Deletion Methods</div>
+        <pre><span class="comment"># Drop the column with too many missing values</span>
+df.drop(columns=[<span class="string">'Credit_History'</span>], inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Drop ALL rows with any missing value</span>
+df.dropna(inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Drop rows missing in specific column only</span>
+df.dropna(subset=[<span class="string">'Rating'</span>], inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Drop row with specific index (shifted/corrupt row)</span>
+df = df.drop(<span class="number">10472</span>)
+
+<span class="comment"># After deletion — check what you lost</span>
+print(f<span class="string">"Rows lost: {original_rows - df.shape[0]}"</span>)
+print(f<span class="string">"% data lost: {(original_rows-df.shape[0])/original_rows*100:.1f}%"</span>)</pre>
+      </div>
+      <div class="adv-disadv">
+        <div class="adv"><h5>✅ Advantages</h5><ul><li>Simple and fast</li><li>No assumptions about data</li><li>Clean, complete dataset</li></ul></div>
+        <div class="disadv"><h5>❌ Disadvantages</h5><ul><li>Data loss (18%+ possible)</li><li>May introduce bias</li><li>Loses small datasets</li></ul></div>
+      </div>
+    </div>
+    <div id="mv2" class="tab-pane">
+      <div class="diff diff-easy">Easy — Level 1</div>
+      <div class="code-block">
+        <div class="code-label">Mode Fill — For Categorical</div>
+        <pre><span class="comment"># Fill single categorical column with mode</span>
+mode_val = df[<span class="string">'Gender'</span>].mode()[<span class="number">0</span>]  <span class="comment"># Most frequent value</span>
+df[<span class="string">'Gender'</span>].fillna(mode_val, inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Fill ALL categorical columns at once with mode</span>
+cat_cols = df.select_dtypes(include=[<span class="string">'object'</span>]).columns
+<span class="keyword">for</span> col <span class="keyword">in</span> cat_cols:
+    <span class="keyword">if</span> df[col].isnull().sum() > <span class="number">0</span>:
+        df[col].fillna(df[col].mode()[<span class="number">0</span>], inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Verify — should now show 0 for all categorical cols</span>
+print(df[cat_cols].isnull().sum())</pre>
+      </div>
+      <div class="success-box"><strong>💡 Why Mode for Categories?</strong> If 60% of customers are "Male", filling missing Gender with "Male" is the most statistically defensible choice. Using mean (like 0.6) makes no sense for a text category.</div>
+    </div>
+    <div id="mv3" class="tab-pane">
+      <div class="diff diff-med">Medium — Level 2</div>
+      <div class="code-block">
+        <div class="code-label">Mean vs Median Imputation</div>
+        <pre><span class="comment"># Mean fill — works when data is roughly normal</span>
+df[<span class="string">'LoanAmount'</span>].fillna(df[<span class="string">'LoanAmount'</span>].mean(), inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Median fill — BETTER when outliers exist</span>
+<span class="comment"># (Mean is pulled by outliers; median is robust)</span>
+df[<span class="string">'Income'</span>].fillna(df[<span class="string">'Income'</span>].median(), inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Group-wise mean (smarter!) — fill by loan type</span>
+df[<span class="string">'LoanAmount'</span>] = df.groupby(<span class="string">'LoanType'</span>)[<span class="string">'LoanAmount'</span>]\
+    .transform(<span class="keyword">lambda</span> x: x.fillna(x.mean()))
+
+<span class="comment"># When to use which?</span>
+<span class="comment"># Mean: symmetric distribution, no outliers</span>
+<span class="comment"># Median: skewed data or outliers present</span>
+<span class="comment"># Group mean: when groups have different patterns</span></pre>
+      </div>
+    </div>
+    <div id="mv4" class="tab-pane">
+      <div class="diff diff-med">Medium — Level 2</div>
+      <div class="code-block">
+        <div class="code-label">Forward/Backward Fill — For Time-Series</div>
+        <pre><span class="comment"># Forward fill: propagates last known value forward</span>
+<span class="comment"># Good for: stock prices, sensor readings, time series</span>
+df[<span class="string">'LoanAmount'</span>].fillna(method=<span class="string">'ffill'</span>, inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Backward fill: propagates next known value backward</span>
+df[<span class="string">'LoanAmount'</span>].fillna(method=<span class="string">'bfill'</span>, inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Row-wise forward fill (across columns)</span>
+df.fillna(method=<span class="string">'ffill'</span>, axis=<span class="number">1</span>, inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Example: Temperature sensor missing reading</span>
+<span class="comment"># Day1:30° | Day2:NaN | Day3:32°</span>
+<span class="comment"># ffill → Day2:30° (last known)</span>
+<span class="comment"># bfill → Day2:32° (next known)</span></pre>
+      </div>
+    </div>
+    <div id="mv5" class="tab-pane">
+      <div class="diff diff-hard">Advanced — Level 3</div>
+      <div class="code-block">
+        <div class="code-label">SimpleImputer — sklearn (Production Ready)</div>
+        <pre><span class="keyword">from</span> sklearn.impute <span class="keyword">import</span> SimpleImputer
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="comment"># Get numerical columns with missing values</span>
+num_cols = df.select_dtypes(include=[<span class="string">'float64'</span>]).columns
+
+<span class="comment"># Create imputer with strategy</span>
+imputer = SimpleImputer(strategy=<span class="string">'mean'</span>)  
+<span class="comment"># Options: 'mean', 'median', 'most_frequent', 'constant'</span>
+
+<span class="comment"># Fit + Transform → returns numpy array</span>
+imputed_array = imputer.fit_transform(df[num_cols])
+
+<span class="comment"># Convert back to DataFrame with original column names</span>
+df[num_cols] = pd.DataFrame(imputed_array, columns=num_cols)
+
+<span class="comment"># Verify — all zeros means all filled</span>
+print(df[num_cols].isnull().sum())
+
+<span class="comment"># Why use SimpleImputer over fillna?</span>
+<span class="comment"># → Can be saved and used in ML Pipeline</span>
+<span class="comment"># → Learns mean/median from TRAINING data only</span>
+<span class="comment"># → Prevents data leakage in cross-validation</span></pre>
+      </div>
+      <div class="info-box"><strong>🏭 Production Tip:</strong> Always fit imputers on <em>training data only</em> (X_train), then transform both train and test sets. Fitting on test data causes <strong>data leakage</strong> — a common mistake that inflates evaluation metrics.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ 2 -->
+  <div class="quiz-box">
+    <h4>🧠 Quick Check: A column "Annual_Income" has 45% missing values. What should you do?</h4>
+    <label class="quiz-option" id="q2a" onclick="checkQ('q2a','wrong','q2')">Delete the entire column immediately — 45% is too much.</label>
+    <label class="quiz-option" id="q2b" onclick="checkQ('q2b','correct','q2')">Check if it's critical; if yes, impute with median (robust to outliers in income data). If not critical and too sparse, drop it.</label>
+    <label class="quiz-option" id="q2c" onclick="checkQ('q2c','wrong','q2')">Fill all missing with 0 — it's the safest choice.</label>
+    <div id="q2-fb" style="margin-top:.75rem;font-size:.88rem;display:none;color:#166534;font-weight:500">✓ Correct! Income is usually critical, and median is better than mean because income data is often right-skewed (few very high earners pull the mean up).</div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 5: OUTLIERS ==================== -->
+<div class="sticky-title" id="outliers"><span>05</span> Outlier Detection & Treatment</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Data Quality</div>
+    <h2>Outliers: The Deceptive Data Points</h2>
+    <p class="section-desc">Outliers can be genuine anomalies worth investigating or simple errors that corrupt your model. Knowing the difference is a superpower.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-tag">💼 Office Salary Analogy</div>
+    <h4>The CEO Problem</h4>
+    <p>In a company, 10 employees earn ₹30,000–₹60,000/month. The CEO earns ₹50,00,000/month. The <strong>average salary</strong> = ₹5,30,000 — which accurately represents <em>nobody's</em> salary! The CEO's salary is an outlier. If you build a model using this distorted average, all predictions will be off. This is the outlier problem in one real example.</p>
+  </div>
+
+  <!-- INTERACTIVE DOT PLOT -->
+  <h3 style="font-weight:700;margin:2rem 0 .75rem">Interactive: See Outliers in Your Data</h3>
+  <div id="dot-plot" class="dot-plot"></div>
+  <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="removeOutlierDots()">Remove Outliers (IQR Method)</button>
+    <button class="btn btn-outline" onclick="resetDots()">Reset</button>
+    <span style="font-size:.82rem;color:var(--muted);padding:.5rem 0">
+      <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--accent2);margin-right:4px"></span>Normal  
+      <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--accent);margin:0 4px 0 12px"></span>Outlier
+    </span>
+  </div>
+
+  <div class="chart-wrap" style="margin-top:2rem">
+    <h4>Box Plot: Application Income — Loan Dataset (Visual Outlier Detection)</h4>
+    <canvas id="boxplotChart" height="180"></canvas>
+  </div>
+
+  <h3 style="font-weight:700;margin:2rem 0 1rem">Method 1: IQR (Interquartile Range)</h3>
+  <div class="level-pills"><span class="level-pill l2">Level 2: Medium</span></div>
+
+  <div class="formula">
+    IQR = Q3 − Q1 &nbsp;|&nbsp; Lower Bound = Q1 − 1.5×IQR &nbsp;|&nbsp; Upper Bound = Q3 + 1.5×IQR
+  </div>
+
+  <div class="analogy" style="margin-bottom:1.5rem">
+    <div class="analogy-tag">📦 Box Plot Explained Visually</div>
+    <h4>Imagine a box with whiskers like a cat</h4>
+    <p>The <strong>box</strong> contains the middle 50% of data (Q1 to Q3). The <strong>line in the middle</strong> is the median. The <strong>whiskers</strong> extend to the last valid data point within 1.5×IQR from the box. Any dots <em>beyond</em> the whiskers = OUTLIERS.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">IQR Method — Complete Implementation</div>
+    <pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> seaborn <span class="keyword">as</span> sns
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+
+<span class="comment"># Step 1: Visualize first</span>
+sns.boxplot(x=df[<span class="string">'ApplicantIncome'</span>])
+plt.show()
+
+<span class="comment"># Step 2: Calculate quartiles and IQR</span>
+Q1 = df[<span class="string">'ApplicantIncome'</span>].quantile(<span class="number">0.25</span>)
+Q3 = df[<span class="string">'ApplicantIncome'</span>].quantile(<span class="number">0.75</span>)
+IQR = Q3 - Q1
+
+<span class="comment"># Step 3: Define bounds</span>
+lower_bound = Q1 - <span class="number">1.5</span> * IQR
+upper_bound = Q3 + <span class="number">1.5</span> * IQR
+print(f<span class="string">"Valid range: {lower_bound:.0f} to {upper_bound:.0f}"</span>)
+
+<span class="comment"># Step 4a: Remove outliers (strict)</span>
+df_clean = df[(df[<span class="string">'ApplicantIncome'</span>] >= lower_bound) &
+              (df[<span class="string">'ApplicantIncome'</span>] <= upper_bound)]
+
+<span class="comment"># Step 4b: OR cap/clip outliers (keeps all data)</span>
+df[<span class="string">'ApplicantIncome'</span>] = np.where(
+    df[<span class="string">'ApplicantIncome'</span>] > upper_bound, upper_bound,
+    np.where(df[<span class="string">'ApplicantIncome'</span>] < lower_bound, lower_bound,
+             df[<span class="string">'ApplicantIncome'</span>]))
+
+<span class="comment"># Step 5: Verify with new box plot</span>
+sns.boxplot(x=df[<span class="string">'ApplicantIncome'</span>])
+plt.title(<span class="string">'After Outlier Removal'</span>)
+plt.show()</pre>
+  </div>
+
+  <h3 style="font-weight:700;margin:2rem 0 1rem">Method 2: Z-Score</h3>
+  <div class="level-pills"><span class="level-pill l2">Level 2: Medium</span></div>
+
+  <div class="formula">
+    Z = (X − μ) / σ &nbsp;&nbsp; |Outlier if |Z| > 3|
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Z-Score Method</div>
+    <pre><span class="comment"># Z-score: how many standard deviations from mean?</span>
+<span class="comment"># |z| > 3 → data is in the extreme 0.3% → outlier</span>
+
+mean = df[<span class="string">'CoapplicantIncome'</span>].mean()
+std  = df[<span class="string">'CoapplicantIncome'</span>].std()
+
+<span class="comment"># Calculate z-scores</span>
+df[<span class="string">'z_score'</span>] = (df[<span class="string">'CoapplicantIncome'</span>] - mean) / std
+
+<span class="comment"># Keep only data within ±3 standard deviations</span>
+df_clean = df[df[<span class="string">'z_score'</span>].abs() <= <span class="number">3</span>]
+
+<span class="comment"># Alternative: scipy zscore (faster)</span>
+<span class="keyword">from</span> scipy <span class="keyword">import</span> stats
+z_scores = np.abs(stats.zscore(df[<span class="string">'CoapplicantIncome'</span>]))
+df_clean = df[z_scores <= <span class="number">3</span>]
+
+print(f<span class="string">"Rows removed: {len(df) - len(df_clean)}"</span>)</pre>
+  </div>
+
+  <table class="compare-table" style="margin-top:1.5rem">
+    <tr><th>Method</th><th>When to Use</th><th>Pros</th><th>Cons</th></tr>
+    <tr><td><strong>IQR</strong></td><td>Skewed data, robustness needed</td><td>Not affected by extreme outliers</td><td>May be too aggressive for normal data</td></tr>
+    <tr><td><strong>Z-Score</strong></td><td>Normally distributed data</td><td>Statistically principled (±3σ rule)</td><td>Sensitive to extreme outliers itself</td></tr>
+    <tr><td><strong>Box Plot</strong></td><td>Visual exploration</td><td>Intuitive, quick</td><td>Doesn't remove, only shows</td></tr>
+    <tr><td><strong>Isolation Forest</strong></td><td>High-dimensional data</td><td>ML-based, no distribution assumption</td><td>More complex to implement</td></tr>
+  </table>
+
+  <div class="warn-box">
+    <strong>⚠️ Caution:</strong> Don't blindly remove all outliers! Some outliers represent <strong>genuine extreme events</strong> — a credit card fraud (rare but real), a viral product (rare but legitimate), or a record-breaking sale. Always ask: <em>"Is this outlier a data error, or a real event?"</em>
+  </div>
+
+  <!-- ALGORITHM SENSITIVITY CHART -->
+  <div class="chart-wrap">
+    <h4>Algorithm Sensitivity to Outliers</h4>
+    <canvas id="outlierSensChart" height="200"></canvas>
+  </div>
+</section>
+
+<!-- ==================== SECTION 6: ENCODING ==================== -->
+<div class="sticky-title" id="encoding"><span>06</span> Categorical Encoding</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Transformation</div>
+    <h2>Converting Text to Numbers: Encoding Strategies</h2>
+    <p class="section-desc">ML algorithms speak numbers. Here's how to translate your categories into a language they understand — without losing information.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-tag">🎰 Slot Machine Analogy</div>
+    <h4>Label Encoding vs One-Hot: The Order Problem</h4>
+    <p>If you encode <strong>Red=1, Blue=2, Green=3</strong>, you're accidentally telling the model that Green (3) is "3× more" than Red (1). That's like saying 🍎 is greater than 🍌 mathematically — meaningless! One-Hot Encoding creates separate True/False columns for each color, removing any false ordering.</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab-btns">
+      <button class="tab-btn active" onclick="openTab(event,'enc1')">One-Hot</button>
+      <button class="tab-btn" onclick="openTab(event,'enc2')">Label Encoding</button>
+      <button class="tab-btn" onclick="openTab(event,'enc3')">Ordinal</button>
+      <button class="tab-btn" onclick="openTab(event,'enc4')">Binary/Map</button>
+    </div>
+    <div id="enc1" class="tab-pane active">
+      <div class="diff diff-easy">Level 1 — Most Common</div>
+      <h3 style="margin-bottom:.5rem">One-Hot Encoding</h3>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1rem">Creates a new binary column for each unique category. Best for <strong>nominal</strong> (unordered) categories.</p>
+      <div style="overflow-x:auto">
+        <table class="compare-table" style="margin:0 0 1rem">
+          <tr><th>Before: Gender</th><th>After: Gender_Male</th><th>After: Gender_Female</th></tr>
+          <tr><td>Male</td><td>1</td><td>0</td></tr>
+          <tr><td>Female</td><td>0</td><td>1</td></tr>
+          <tr><td>Male</td><td>1</td><td>0</td></tr>
+          <tr><td>Female</td><td>0</td><td>1</td></tr>
+        </table>
+      </div>
+      <div class="code-block">
+        <div class="code-label">Both Methods — pandas & sklearn</div>
+        <pre><span class="comment"># Method 1: pandas get_dummies (quick & easy)</span>
+df_encoded = pd.get_dummies(df, columns=[<span class="string">'Gender'</span>, <span class="string">'Married'</span>])
+
+<span class="comment"># Method 2: sklearn OneHotEncoder (production use)</span>
+<span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OneHotEncoder
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+ohe = OneHotEncoder(drop=<span class="string">'first'</span>, sparse=<span class="keyword">False</span>)
+<span class="comment"># drop='first' removes 1st category to avoid multicollinearity</span>
+<span class="comment"># (if Male=0, you already know it's Female — no need for both!)</span>
+
+cols = [<span class="string">'Gender'</span>, <span class="string">'Married'</span>]
+encoded = ohe.fit_transform(df[cols])
+encoded_df = pd.DataFrame(encoded, columns=ohe.get_feature_names_out(cols))
+
+df = pd.concat([df.drop(columns=cols), encoded_df], axis=<span class="number">1</span>)</pre>
+      </div>
+      <div class="warn-box"><strong>⚠️ Curse of Dimensionality:</strong> One-hot encoding a column with 1000 unique cities creates 1000 new columns! For high-cardinality features, consider Target Encoding or Frequency Encoding instead.</div>
+      <div class="adv-disadv">
+        <div class="adv"><h5>✅ Advantages</h5><ul><li>No false ordering implied</li><li>Works perfectly for nominal data</li><li>Standard, universally understood</li></ul></div>
+        <div class="disadv"><h5>❌ Disadvantages</h5><ul><li>Creates many columns (curse of dimensionality)</li><li>Sparse matrix for high-cardinality</li><li>Not suitable for tree models</li></ul></div>
+      </div>
+    </div>
+    <div id="enc2" class="tab-pane">
+      <div class="diff diff-easy">Level 1</div>
+      <h3 style="margin-bottom:.5rem">Label Encoding</h3>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1rem">Assigns integers to categories. Use <strong>only for ordinal</strong> data (where order matters) or tree-based algorithms.</p>
+      <div class="code-block">
+        <div class="code-label">Label Encoding</div>
+        <pre><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> LabelEncoder
+
+le = LabelEncoder()
+
+<span class="comment"># Simple usage</span>
+df[<span class="string">'Property_Area_enc'</span>] = le.fit_transform(df[<span class="string">'Property_Area'</span>])
+<span class="comment"># Urban=2, Rural=0, Semiurban=1 (alphabetical by default)</span>
+
+<span class="comment"># Apply to multiple columns</span>
+cat_cols = [<span class="string">'Category'</span>, <span class="string">'Content Rating'</span>, <span class="string">'Genres'</span>]
+<span class="keyword">for</span> col <span class="keyword">in</span> cat_cols:
+    df[col] = le.fit_transform(df[col])
+
+<span class="comment"># Binary encoding (simplest case)</span>
+df[<span class="string">'Type'</span>] = np.where(df[<span class="string">'Type'</span>] == <span class="string">'Free'</span>, <span class="number">1</span>, <span class="number">0</span>)
+<span class="comment"># Free=1, Paid=0</span></pre>
+      </div>
+    </div>
+    <div id="enc3" class="tab-pane">
+      <div class="diff diff-med">Level 2</div>
+      <h3 style="margin-bottom:.5rem">Ordinal Encoding</h3>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1rem">Preserves the meaningful order in categorical data. Perfect for size, education level, satisfaction ratings.</p>
+      <div class="code-block">
+        <div class="code-label">Ordinal Encoding — Two Methods</div>
+        <pre><span class="comment"># METHOD 1: OrdinalEncoder (sklearn)</span>
+<span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OrdinalEncoder
+
+<span class="comment"># Define explicit category order</span>
+size_order = [[<span class="string">'XS'</span>, <span class="string">'S'</span>, <span class="string">'M'</span>, <span class="string">'L'</span>, <span class="string">'XL'</span>, <span class="string">'XXL'</span>]]
+
+oe = OrdinalEncoder(categories=size_order)
+df[<span class="string">'Size_enc'</span>] = oe.fit_transform(df[[<span class="string">'Size'</span>]])
+<span class="comment"># XS=0, S=1, M=2, L=3, XL=4, XXL=5</span>
+
+<span class="comment"># Real example: Property Area (Rural < Semiurban < Urban)</span>
+area_order = [[<span class="string">'Rural'</span>, <span class="string">'Semiurban'</span>, <span class="string">'Urban'</span>]]
+oe = OrdinalEncoder(categories=area_order)
+df[<span class="string">'Property_Area_ord'</span>] = oe.fit_transform(df[[<span class="string">'Property_Area'</span>]])
+
+<span class="comment"># METHOD 2: map() function (more flexible)</span>
+size_map = {<span class="string">'XS'</span>: <span class="number">1</span>, <span class="string">'S'</span>: <span class="number">2</span>, <span class="string">'M'</span>: <span class="number">3</span>, <span class="string">'L'</span>: <span class="number">4</span>, <span class="string">'XL'</span>: <span class="number">5</span>, <span class="string">'XXL'</span>: <span class="number">6</span>}
+df[<span class="string">'Size_mapped'</span>] = df[<span class="string">'Size'</span>].map(size_map)
+<span class="comment"># Advantage: You can use any numbers you want!</span>
+<span class="comment"># e.g. assign 10,20,30 instead of 1,2,3 for more separation</span></pre>
+      </div>
+    </div>
+    <div id="enc4" class="tab-pane">
+      <div class="diff diff-hard">Level 3</div>
+      <h3 style="margin-bottom:.5rem">Advanced: Target & Frequency Encoding</h3>
+      <div class="code-block">
+        <div class="code-label">Frequency + Target Encoding</div>
+        <pre><span class="comment"># FREQUENCY ENCODING: Replace category with its count</span>
+<span class="comment"># Great for high-cardinality (e.g., 500 cities)</span>
+freq_map = df[<span class="string">'City'</span>].value_counts().to_dict()
+df[<span class="string">'City_freq'</span>] = df[<span class="string">'City'</span>].map(freq_map)
+<span class="comment"># Mumbai(1500 rows) → 1500, Pune(200 rows) → 200</span>
+
+<span class="comment"># TARGET ENCODING: Replace category with mean of target</span>
+<span class="comment"># Use ONLY on training data to avoid leakage!</span>
+target_means = df.groupby(<span class="string">'City'</span>)[<span class="string">'LoanApproved'</span>].mean()
+df[<span class="string">'City_target'</span>] = df[<span class="string">'City'</span>].map(target_means)
+<span class="comment"># Mumbai (80% approval) → 0.8, Rural (40%) → 0.4</span>
+
+<span class="comment"># HASH ENCODING: For very high cardinality</span>
+<span class="comment"># Maps categories to fixed N buckets using hashing</span>
+<span class="keyword">from</span> category_encoders <span class="keyword">import</span> HashingEncoder
+he = HashingEncoder(cols=[<span class="string">'City'</span>], n_components=<span class="number">8</span>)
+df_enc = he.fit_transform(df)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENCODING COMPARISON CHART -->
+  <div class="chart-wrap" style="margin-top:2rem">
+    <h4>Encoding Method Selection Guide</h4>
+    <canvas id="encodingChart" height="200"></canvas>
+  </div>
+</section>
+
+<!-- ==================== SECTION 7: FEATURE SCALING ==================== -->
+<div class="sticky-title" id="scaling"><span>07</span> Feature Scaling</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Normalization</div>
+    <h2>Feature Scaling: Leveling the Playing Field</h2>
+    <p class="section-desc">When one feature ranges 0–1 and another ranges 0–1,000,000, algorithms unfairly treat the larger one as more important. Scaling fixes this.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-tag">⚖️ Olympics Analogy</div>
+    <h4>It's like judging athletes on the same scale</h4>
+    <p>Imagine judging gymnasts (scores 1–10) vs weightlifters (kg lifted: 100–300) in the same event. The weightlifter's number looks 30× bigger, but that doesn't make them 30× better. Feature scaling puts all athletes on a <strong>fair, comparable scale</strong> before judgment begins.</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab-btns">
+      <button class="tab-btn active" onclick="openTab(event,'sc1')">Standardization</button>
+      <button class="tab-btn" onclick="openTab(event,'sc2')">Min-Max</button>
+      <button class="tab-btn" onclick="openTab(event,'sc3')">Robust Scaler</button>
+      <button class="tab-btn" onclick="openTab(event,'sc4')">Comparison</button>
+    </div>
+    <div id="sc1" class="tab-pane active">
+      <div class="diff diff-med">Level 2 — Standard</div>
+      <h3 style="margin-bottom:.5rem">Standardization (Z-Score Scaling)</h3>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1rem">Transforms data to have <strong>mean=0</strong> and <strong>standard deviation=1</strong>. No hard upper/lower limit.</p>
+      <div class="formula">x_scaled = (x − mean) / std_dev</div>
+      <div class="code-block">
+        <div class="code-label">StandardScaler — From the Actual Notebook</div>
+        <pre><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="comment"># Example: x1 = [0,0,1,2,5,10,15,20,1000]</span>
+x1 = [<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">5</span>,<span class="number">10</span>,<span class="number">15</span>,<span class="number">20</span>,<span class="number">1000</span>]
+x1_scaled = (np.array(x1) - np.mean(x1)) / np.std(x1)
+print(<span class="string">"Std after scaling:"</span>, np.std(x1_scaled))  <span class="comment"># ≈ 1.0</span>
+
+<span class="comment"># Sklearn version (preferred in pipelines)</span>
+numeric_cols = [<span class="string">'Rating'</span>, <span class="string">'Reviews'</span>, <span class="string">'Size'</span>]
+df[numeric_cols] = df[numeric_cols].fillna(<span class="number">0</span>)
+
+scaler = StandardScaler()
+df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+
+<span class="comment"># Verify: mean≈0, std≈1</span>
+print(df[numeric_cols].describe().loc[[<span class="string">'mean'</span>, <span class="string">'std'</span>]])</pre>
+      </div>
+      <div class="success-box"><strong>✅ Use StandardScaler when:</strong> Data is roughly normally distributed. Algorithms that assume normal distribution (SVM, logistic regression, PCA, linear regression). When outliers are already handled.</div>
+    </div>
+    <div id="sc2" class="tab-pane">
+      <div class="diff diff-med">Level 2</div>
+      <h3 style="margin-bottom:.5rem">Min-Max Normalization</h3>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1rem">Scales all values to the <strong>[0, 1]</strong> range. Preserves the shape of the original distribution.</p>
+      <div class="formula">x_norm = (x − x_min) / (x_max − x_min)</div>
+      <div class="code-block">
+        <div class="code-label">MinMaxScaler — From the Actual Notebook</div>
+        <pre><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler
+
+<span class="comment"># Numeric example: [2,3,4,5,6,7] → all compressed to [0,1]</span>
+x = np.array([<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>])
+x_minmax = (x - x.min()) / (x.max() - x.min())
+print(x_minmax)  <span class="comment"># [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]</span>
+
+<span class="comment"># Sklearn: Applied to CoapplicantIncome</span>
+scaler = MinMaxScaler()
+df[<span class="string">'CoapplicantIncome_scaled'</span>] = scaler.fit_transform(
+    df[[<span class="string">'CoapplicantIncome'</span>]])
+
+<span class="comment"># Verify: min=0, max=1</span>
+print(df[<span class="string">'CoapplicantIncome_scaled'</span>].describe())</pre>
+      </div>
+      <div class="success-box"><strong>✅ Use MinMaxScaler when:</strong> Need values in [0,1] range (neural networks, image pixels). Data doesn't follow normal distribution. When you know the min/max bounds make sense.</div>
+    </div>
+    <div id="sc3" class="tab-pane">
+      <div class="diff diff-hard">Level 3</div>
+      <h3 style="margin-bottom:.5rem">Robust Scaler — Outlier-Resistant</h3>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1rem">Uses <strong>median and IQR</strong> instead of mean/std. Not affected by outliers.</p>
+      <div class="formula">x_robust = (x − median) / IQR</div>
+      <div class="code-block">
+        <div class="code-label">RobustScaler</div>
+        <pre><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> RobustScaler
+
+<span class="comment"># Perfect when outliers exist but can't be removed</span>
+<span class="comment"># (e.g., fraud data where outliers ARE the signal!)</span>
+rscaler = RobustScaler()
+df[<span class="string">'Income_robust'</span>] = rscaler.fit_transform(df[[<span class="string">'ApplicantIncome'</span>]])
+
+<span class="comment"># Compare: a salary of ₹5,00,000 won't skew the scaling</span>
+<span class="comment"># because RobustScaler ignores values beyond IQR range</span></pre>
+      </div>
+    </div>
+    <div id="sc4" class="tab-pane">
+      <h3 style="margin-bottom:1rem;font-weight:700">Which Scaler Should You Use?</h3>
+      <table class="compare-table">
+        <tr><th>Scaler</th><th>Output Range</th><th>Handles Outliers?</th><th>Best For</th></tr>
+        <tr><td><strong>StandardScaler</strong></td><td>Unbounded (centered at 0)</td><td>❌ Sensitive</td><td>SVM, PCA, Logistic Regression</td></tr>
+        <tr><td><strong>MinMaxScaler</strong></td><td>[0, 1]</td><td>❌ Very sensitive</td><td>Neural Networks, KNN, image data</td></tr>
+        <tr><td><strong>RobustScaler</strong></td><td>Unbounded</td><td>✅ Resistant</td><td>Data with outliers you can't remove</td></tr>
+        <tr><td><strong>MaxAbsScaler</strong></td><td>[-1, 1]</td><td>❌ Sensitive</td><td>Sparse data</td></tr>
+        <tr><td><strong>None needed</strong></td><td>Original</td><td>✅ N/A</td><td>Decision Trees, Random Forest (scale-invariant)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- SCALING CHART -->
+  <div class="chart-wrap" style="margin-top:2rem">
+    <h4>Before vs After Feature Scaling — Application Income Distribution</h4>
+    <canvas id="scalingChart" height="220"></canvas>
+  </div>
+</section>
+
+<!-- ==================== SECTION 8: DUPLICATES ==================== -->
+<div class="sticky-title" id="duplicates"><span>08</span> Handling Duplicates</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Data Quality</div>
+    <h2>Duplicate Data: The Silent Bias Creator</h2>
+    <p class="section-desc">Duplicate rows make your model learn certain patterns multiple times, creating bias and inflating performance metrics.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-tag">📖 Exam Analogy</div>
+    <h4>Studying the same note 10 times</h4>
+    <p>If you have 100 exam questions but 20 of them are duplicates, your study strategy gets biased toward those 20 topics. Similarly, if a dataset has 1000 rows but 200 are duplicates of one particular customer profile, the ML model over-learns that pattern and performs poorly on other patterns.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-label">Complete Duplicate Handling — Level 1 to Level 3</div>
+    <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="comment"># ==== LEVEL 1: Basic Detection & Removal ====</span>
+df = pd.read_csv(<span class="string">'loan_data.csv'</span>)
+
+<span class="comment"># Add boolean column showing which rows are duplicates</span>
+df[<span class="string">'is_duplicate'</span>] = df.duplicated()
+print(df[<span class="string">'is_duplicate'</span>].value_counts())
+<span class="comment"># False: 600 rows  True: 14 rows (duplicates!)</span>
+
+<span class="comment"># Remove all duplicate rows, keep first occurrence</span>
+df.drop_duplicates(keep=<span class="string">'first'</span>, inplace=<span class="keyword">True</span>)
+
+<span class="comment"># ==== LEVEL 2: Partial Duplicates ====</span>
+<span class="comment"># Rows duplicate only on specific columns (e.g., same customer)</span>
+df.drop_duplicates(subset=[<span class="string">'CustomerID'</span>, <span class="string">'OrderDate'</span>], 
+                   keep=<span class="string">'last'</span>, inplace=<span class="keyword">True</span>)
+
+<span class="comment"># ==== LEVEL 3: Fuzzy Duplicates (same person, slightly diff data) ====</span>
+<span class="keyword">from</span> fuzzywuzzy <span class="keyword">import</span> fuzz
+<span class="comment"># Find near-duplicate names: "Rahul Sharma" vs "Rahul  Sharma"</span>
+<span class="keyword">def</span> <span class="func">is_fuzzy_dup</span>(name1, name2, threshold=<span class="number">90</span>):
+    <span class="keyword">return</span> fuzz.ratio(name1.lower(), name2.lower()) >= threshold</pre>
+  </div>
+
+  <div class="adv-disadv">
+    <div class="adv"><h5>✅ Why Remove Duplicates</h5><ul><li>Unbiased model training</li><li>Faster training (fewer rows)</li><li>Accurate evaluation metrics</li><li>Correct statistical analysis</li></ul></div>
+    <div class="disadv"><h5>⚠️ When NOT to Remove</h5><ul><li>Truly repeated events (e.g., same user bought same product twice)</li><li>Rare event amplification needed</li><li>Audit trails where repetition is meaningful</li></ul></div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 9: TRANSFORMATION ==================== -->
+<div class="sticky-title" id="transform"><span>09</span> Data Transformation</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Advanced</div>
+    <h2>Function Transformation: Making Skewed Data Normal</h2>
+    <p class="section-desc">Many ML algorithms assume normally distributed data. Transformation techniques reshape your skewed distributions toward normality.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-tag">📸 Photography Analogy</div>
+    <h4>Logarithm = Instagram Filter for Data</h4>
+    <p>A photo with very dark shadows and very bright highlights looks bad. You apply a filter to "compress" the extremes — making dark areas lighter and bright areas darker, while keeping the relative look. Log transformation does the same: it <strong>compresses the long right tail</strong> of income distributions, making algorithms "see" the data more clearly.</p>
+  </div>
+
+  <div class="chart-wrap">
+    <h4>Before vs After Log Transformation — Income Distribution</h4>
+    <canvas id="transformChart" height="220"></canvas>
+  </div>
+
+  <div class="level-pills" style="margin-top:1.5rem"><span class="level-pill l3">Level 3: Sub-Hard</span></div>
+  <div class="code-block">
+    <div class="code-label">Function Transformation — Log, Power, Box-Cox</div>
+    <pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> FunctionTransformer, PowerTransformer
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+
+<span class="comment"># STEP 1: Remove outliers first (IQR method)</span>
+Q1 = df[<span class="string">'CoapplicantIncome'</span>].quantile(<span class="number">0.25</span>)
+Q3 = df[<span class="string">'CoapplicantIncome'</span>].quantile(<span class="number">0.75</span>)
+IQR = Q3 - Q1
+df = df[(df[<span class="string">'CoapplicantIncome'</span>] >= Q1 - <span class="number">1.5</span>*IQR) &
+        (df[<span class="string">'CoapplicantIncome'</span>] <= Q3 + <span class="number">1.5</span>*IQR)]
+
+<span class="comment"># STEP 2: Log Transform (log of 0 = -inf! Add 1 first)</span>
+log_transformer = FunctionTransformer(np.log1p)  <span class="comment"># log(1+x)</span>
+df[<span class="string">'Income_log'</span>] = log_transformer.transform(
+    df[[<span class="string">'CoapplicantIncome'</span>]])
+
+<span class="comment"># STEP 3: Square Root Transform (gentler than log)</span>
+df[<span class="string">'Income_sqrt'</span>] = np.sqrt(df[<span class="string">'CoapplicantIncome'</span>])
+
+<span class="comment"># STEP 4: Power Transform (Yeo-Johnson, Box-Cox)</span>
+<span class="comment"># Yeo-Johnson works with zeros AND negatives</span>
+<span class="comment"># Box-Cox requires strictly positive values</span>
+pt = PowerTransformer(method=<span class="string">'yeo-johnson'</span>)
+df[<span class="string">'Income_power'</span>] = pt.fit_transform(df[[<span class="string">'CoapplicantIncome'</span>]])
+
+<span class="comment"># Compare all distributions side by side</span>
+fig, axes = plt.subplots(<span class="number">1</span>, <span class="number">4</span>, figsize=(<span class="number">16</span>, <span class="number">4</span>))
+cols = [<span class="string">'CoapplicantIncome'</span>, <span class="string">'Income_log'</span>, <span class="string">'Income_sqrt'</span>, <span class="string">'Income_power'</span>]
+titles = [<span class="string">'Original'</span>, <span class="string">'Log'</span>, <span class="string">'Sqrt'</span>, <span class="string">'Yeo-Johnson'</span>]
+<span class="keyword">for</span> ax, col, title <span class="keyword">in</span> zip(axes, cols, titles):
+    df[col].plot(kind=<span class="string">'hist'</span>, bins=<span class="number">30</span>, ax=ax, title=title)
+plt.tight_layout()
+plt.show()</pre>
+  </div>
+
+  <table class="compare-table" style="margin-top:1.5rem">
+    <tr><th>Transform</th><th>Formula</th><th>When to Use</th><th>Limitation</th></tr>
+    <tr><td><strong>Log (log1p)</strong></td><td>log(1+x)</td><td>Right-skewed, positive data</td><td>Cannot use with negatives or zeros (use +1 shift)</td></tr>
+    <tr><td><strong>Square Root</strong></td><td>√x</td><td>Count data, moderate skew</td><td>Weaker than log, still needs non-negative</td></tr>
+    <tr><td><strong>Box-Cox</strong></td><td>Complex power</td><td>Strictly positive, finding optimal λ</td><td>Requires all positive values</td></tr>
+    <tr><td><strong>Yeo-Johnson</strong></td><td>Extended Box-Cox</td><td>Handles zeros AND negatives</td><td>Harder to interpret</td></tr>
+    <tr><td><strong>Reciprocal (1/x)</strong></td><td>1/x</td><td>Very extreme right skew</td><td>Cannot use with zeros</td></tr>
+  </table>
+</section>
+
+<!-- ==================== SECTION 10: SANITY CHECKS ==================== -->
+<div class="sticky-title" id="sanity"><span>10</span> Sanity Checks</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Validation</div>
+    <h2>Sanity Checks: Trust But Verify</h2>
+    <p class="section-desc">After all preprocessing, you must verify that the data is logically and factually correct. These checks catch impossible values that cleaning might have created.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-tag">✈️ Pilot Pre-Flight Check</div>
+    <h4>Before takeoff, pilots run a checklist</h4>
+    <p>Even after extensive maintenance, pilots still systematically check every critical system before flying. Data scientists must do the same — after all preprocessing, run systematic checks to confirm nothing is broken, impossible, or logically inconsistent.</p>
+  </div>
+
+  <div class="level-pills"><span class="level-pill l2">Level 2: Medium</span></div>
+  <div class="code-block">
+    <div class="code-label">Google Play Store — Complete Sanity Checks (From Notebook)</div>
+    <pre><span class="comment"># SANITY CHECK 1: Ratings must be between 1 and 5</span>
+print(f<span class="string">"Min rating: {df['Rating'].min()}"</span>)  <span class="comment"># Should be ≥ 1</span>
+print(f<span class="string">"Max rating: {df['Rating'].max()}"</span>)  <span class="comment"># Should be ≤ 5</span>
+invalid_ratings = df[(df[<span class="string">'Rating'</span>] < <span class="number">1</span>) | (df[<span class="string">'Rating'</span>] > <span class="number">5</span>)]
+print(f<span class="string">"Invalid ratings: {len(invalid_ratings)}"</span>)
+
+<span class="comment"># Fix: Replace invalid with median</span>
+median_rating = df[<span class="string">'Rating'</span>].median()
+df.loc[(df[<span class="string">'Rating'</span>] < <span class="number">1</span>) | (df[<span class="string">'Rating'</span>] > <span class="number">5</span>), <span class="string">'Rating'</span>] = median_rating
+
+<span class="comment"># SANITY CHECK 2: Reviews ≤ Installs (logical rule)</span>
+<span class="comment"># Can't have 1000 reviews if only 500 people installed it!</span>
+violations = df[df[<span class="string">'Reviews'</span>] >= df[<span class="string">'Installs'</span>]]
+print(f<span class="string">"Reviews > Installs violations: {len(violations)}"</span>)
+df = df[df[<span class="string">'Reviews'</span>] < df[<span class="string">'Installs'</span>]]
+
+<span class="comment"># SANITY CHECK 3: Free apps should have Price = 0</span>
+<span class="comment"># Type: 1=Free, 0=Paid</span>
+free_with_price = df[(df[<span class="string">'Type'</span>] == <span class="number">1</span>) & (df[<span class="string">'Price'</span>] > <span class="number">0</span>)]
+print(f<span class="string">"Free apps with non-zero price: {len(free_with_price)}"</span>)
+
+<span class="comment"># SANITY CHECK 4: Age must be positive and reasonable</span>
+df = df[(df[<span class="string">'Age'</span>] > <span class="number">0</span>) & (df[<span class="string">'Age'</span>] < <span class="number">120</span>)]
+
+<span class="comment"># SANITY CHECK 5: Loan approval date after application date</span>
+df = df[df[<span class="string">'ApprovalDate'</span>] >= df[<span class="string">'ApplicationDate'</span>]]
+
+<span class="comment"># Final summary report</span>
+print(<span class="string">"\n=== FINAL DATA QUALITY REPORT ==="</span>)
+print(f<span class="string">"Total rows: {df.shape[0]}"</span>)
+print(f<span class="string">"Total columns: {df.shape[1]}"</span>)
+print(f<span class="string">"Missing values: {df.isnull().sum().sum()}"</span>)
+print(f<span class="string">"Duplicate rows: {df.duplicated().sum()}"</span>)</pre>
+  </div>
+
+  <h3 style="font-weight:700;margin:2rem 0 1rem">Sanity Check Categories</h3>
+  <div class="cards">
+    <div class="card"><div class="card-icon">📐</div><h3>Range Checks</h3><p>Values must fall within logical bounds. Age 0–120, Rating 1–5, Percentage 0–100%, Temperature > -273°C</p></div>
+    <div class="card"><div class="card-icon">🔗</div><h3>Cross-Column Rules</h3><p>Values in one column must be consistent with another. Reviews ≤ Installs, End Date ≥ Start Date, Delivery ≥ Order Date</p></div>
+    <div class="card"><div class="card-icon">🔠</div><h3>Type Checks</h3><p>Columns must contain correct types. Phone numbers are numeric, ZIP codes are integers, emails contain @</p></div>
+    <div class="card"><div class="card-icon">📋</div><h3>Valid Category Checks</h3><p>Categorical values must belong to the defined set. Blood type ∈ {A,B,AB,O}. Country codes in ISO standard.</p></div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 11: CASE STUDIES ==================== -->
+<div class="sticky-title" id="casestudy"><span>11</span> Real-World Case Studies</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Real World</div>
+    <h2>5 Real-World Case Studies</h2>
+    <p class="section-desc">See how preprocessing decisions play out in actual industry scenarios — with consequences, solutions, and lessons learned.</p>
+  </div>
+
+  <!-- Case Study 1 -->
+  <div class="case-study" style="margin-bottom:1.5rem">
+    <div class="cs-header" style="background:#1a1a2e">
+      <span class="cs-icon">🏦</span>
+      <div>
+        <div class="cs-title">Case 1: HDFC Bank — Loan Default Prediction</div>
+        <div class="cs-sub">Industry: Banking | Problem: Missing Data + Outliers</div>
+      </div>
+    </div>
+    <div class="cs-body">
+      <p style="font-size:.9rem;margin-bottom:1rem">A loan default prediction model was giving 60% accuracy. Investigation revealed: 35% of "Annual Income" was missing, "Loan Amount" had extreme outliers (₹5 to ₹50 crore in same column), and "Dependents" column had mixed data ("3+" instead of 3).</p>
+      <div class="cs-row">
+        <div class="cs-cell"><h5>Problem Identified</h5><p style="font-size:.82rem">Missing income data (35%), mixed "Dependents" column, outliers in loan amount field skewing the mean by 400%</p></div>
+        <div class="cs-cell"><h5>Solution Applied</h5><p style="font-size:.82rem">Median imputation for income (group-wise by occupation), replace "3+" with 3, IQR-based capping for loan amounts</p></div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-cell"><h5>Result</h5><p style="font-size:.82rem">Model accuracy jumped from 60% → 84%. False positive rate (wrong rejections) dropped by 40%</p></div>
+        <div class="cs-cell"><h5>Key Lesson</h5><p style="font-size:.82rem">Group-wise imputation (median income by occupation type) was far superior to global median. Domain knowledge matters!</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Study 2 -->
+  <div class="case-study" style="margin-bottom:1.5rem">
+    <div class="cs-header" style="background:#1e3a2f">
+      <span class="cs-icon">🛒</span>
+      <div>
+        <div class="cs-title">Case 2: Amazon India — Product Recommendation Engine</div>
+        <div class="cs-sub">Industry: E-commerce | Problem: Encoding + Scaling</div>
+      </div>
+    </div>
+    <div class="cs-body">
+      <p style="font-size:.9rem;margin-bottom:1rem">Recommendation system was dominated by "Price" feature because it ranged ₹1–₹5,00,000 while "Rating" ranged 1–5 and "Review Count" ranged 0–1,000. KNN distance metric was essentially computing only on Price.</p>
+      <div class="cs-row">
+        <div class="cs-cell"><h5>Problem Identified</h5><p style="font-size:.82rem">Feature scale dominance: Price (1–500000) overshadowed Rating (1–5) and Reviews (0–1000) in distance-based KNN algorithm</p></div>
+        <div class="cs-cell"><h5>Solution Applied</h5><p style="font-size:.82rem">MinMax scaling all numerical features to [0,1]. One-hot encoding for Category (500+ categories → hashing used). Label encoding for verified purchase</p></div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-cell"><h5>Result</h5><p style="font-size:.82rem">CTR on recommendations improved by 23%. "Impulse buy" products no longer dominated purely because of high price range</p></div>
+        <div class="cs-cell"><h5>Key Lesson</h5><p style="font-size:.82rem">For KNN, SVMs, and neural networks, feature scaling is NOT optional — it's mandatory. Tree-based methods don't need it.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Study 3 -->
+  <div class="case-study" style="margin-bottom:1.5rem">
+    <div class="cs-header" style="background:#2d1515">
+      <span class="cs-icon">🏥</span>
+      <div>
+        <div class="cs-title">Case 3: Apollo Hospitals — Patient Readmission Prediction</div>
+        <div class="cs-sub">Industry: Healthcare | Problem: Data Types + Sanity Checks</div>
+      </div>
+    </div>
+    <div class="cs-body">
+      <p style="font-size:.9rem;margin-bottom:1rem">A readmission model flagged a 5-year-old patient as "high risk for cardiac event" and a 300-year-old as "low risk." Data entry errors in age field (some in months, some in years) were propagating through the pipeline unchecked.</p>
+      <div class="cs-row">
+        <div class="cs-cell"><h5>Problem Identified</h5><p style="font-size:.82rem">Age field had mixed units (some in months, some in years), values like 840 (70-year-old recorded in months), and dates as strings preventing age calculation</p></div>
+        <div class="cs-cell"><h5>Solution Applied</h5><p style="font-size:.82rem">Sanity check: age must be 0–120. Values >120 flagged for review. If >12 months and <240 months → divide by 12. Strict data validation added at entry point</p></div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-cell"><h5>Result</h5><p style="font-size:.82rem">Model AUC improved from 0.68 → 0.89. Critical patient alerts became 91% accurate. This case study was used in a medical informatics paper</p></div>
+        <div class="cs-cell"><h5>Key Lesson</h5><p style="font-size:.82rem">In healthcare, sanity checks are life-critical. Domain expert validation of every business rule is non-negotiable. Never automate medical decisions without human review.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Study 4 -->
+  <div class="case-study" style="margin-bottom:1.5rem">
+    <div class="cs-header" style="background:#1a1a0d">
+      <span class="cs-icon">📱</span>
+      <div>
+        <div class="cs-title">Case 4: Google Play Store — App Rating Predictor</div>
+        <div class="cs-sub">Industry: Tech | Problem: Mixed Types + Duplicates + Outliers</div>
+      </div>
+    </div>
+    <div class="cs-body">
+      <p style="font-size:.9rem;margin-bottom:1rem">The actual notebook in this course! Google Play Store dataset with 10,841 apps needed complete preprocessing: Price had "$" symbols, Installs had "+" and commas, Size had "M" and "k" suffixes, and duplicate apps existed with different Install counts.</p>
+      <div class="code-block" style="margin:1rem 0">
+        <div class="code-label">Complete Pipeline — Google Play Store</div>
+        <pre><span class="comment"># The full preprocessing pipeline from the actual notebook</span>
+df = pd.read_csv(<span class="string">'googleplaystore_v2.csv'</span>)
+
+<span class="comment"># 1. Drop rows with missing Rating (target variable)</span>
+df = df[df[<span class="string">"Rating"</span>].notna()]
+
+<span class="comment"># 2. Fix Price: "$2.99" → 2.99, "Free" → 0.0</span>
+df[<span class="string">'Price'</span>] = df[<span class="string">'Price'</span>].replace(<span class="string">'Free'</span>,<span class="string">'0'</span>)
+df[<span class="string">'Price'</span>] = df[<span class="string">'Price'</span>].str.replace(<span class="string">'$'</span>,<span class="string">''</span>,regex=<span class="keyword">False</span>).astype(float)
+
+<span class="comment"># 3. Fix Installs: "10,000+" → 10000</span>
+df[<span class="string">"Installs"</span>] = df[<span class="string">"Installs"</span>].apply(clean_installs)
+
+<span class="comment"># 4. Fix Size: "19M" → 19.0, "512k" → 0.512</span>
+df[<span class="string">"Size"</span>] = df[<span class="string">"Size"</span>].apply(clean_size)
+
+<span class="comment"># 5. Impute Android Ver with mode</span>
+df[<span class="string">"Android Ver"</span>] = df[<span class="string">"Android Ver"</span>].fillna(<span class="string">"4.1 and up"</span>)
+
+<span class="comment"># 6. Remove duplicates</span>
+df.drop_duplicates(inplace=<span class="keyword">True</span>)
+
+<span class="comment"># 7. Cap size outliers using IQR</span>
+Q1, Q3 = df[<span class="string">"Size"</span>].quantile([<span class="number">0.25</span>,<span class="number">0.75</span>])
+IQR = Q3 - Q1
+df[<span class="string">"Size"</span>] = np.clip(df[<span class="string">"Size"</span>], Q1-<span class="number">1.5</span>*IQR, Q3+<span class="number">1.5</span>*IQR)
+
+<span class="comment"># 8. Encode: Binary + Label</span>
+df[<span class="string">'Type'</span>] = np.where(df[<span class="string">'Type'</span>]==<span class="string">'Free'</span>, <span class="number">1</span>, <span class="number">0</span>)
+<span class="keyword">for</span> col <span class="keyword">in</span> [<span class="string">'Category'</span>,<span class="string">'Content Rating'</span>,<span class="string">'Genres'</span>]:
+    df[col] = LabelEncoder().fit_transform(df[col])
+
+<span class="comment"># 9. Standardize numerical features</span>
+scaler = StandardScaler()
+df[[<span class="string">'Rating'</span>,<span class="string">'Reviews'</span>,<span class="string">'Size'</span>]] = scaler.fit_transform(
+    df[[<span class="string">'Rating'</span>,<span class="string">'Reviews'</span>,<span class="string">'Size'</span>]])
+
+<span class="comment"># 10. Sanity checks</span>
+assert df[<span class="string">'Reviews'</span>].le(df[<span class="string">'Installs'</span>]).all(), <span class="string">"Reviews > Installs!"</span>
+assert df.isnull().sum().sum() == <span class="number">0</span>, <span class="string">"Still has missing values!"</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Study 5 -->
+  <div class="case-study">
+    <div class="cs-header" style="background:#1a1530">
+      <span class="cs-icon">✈️</span>
+      <div>
+        <div class="cs-title">Case 5: Airline Delay Prediction (Skewed Data)</div>
+        <div class="cs-sub">Industry: Aviation | Problem: Severe Right Skew + Class Imbalance</div>
+      </div>
+    </div>
+    <div class="cs-body">
+      <p style="font-size:.9rem;margin-bottom:1rem">99% of flights have delays under 30 minutes. 0.1% have delays of 4+ hours. A simple model predicted "no delay" for all flights and still achieved 99% accuracy! The preprocessing team needed to apply log transformation to delay time AND oversample rare extreme delays.</p>
+      <div class="cs-row">
+        <div class="cs-cell"><h5>Problem Identified</h5><p style="font-size:.82rem">Extreme right skew: most delays 0–30 min, some 4+ hours. Model accuracy was misleading (99% by predicting "no delay" for all)</p></div>
+        <div class="cs-cell"><h5>Solution Applied</h5><p style="font-size:.82rem">Log1p transformation of delay. SMOTE oversampling for extreme delays. Evaluation changed from accuracy to F1-score and AUC-ROC</p></div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-cell"><h5>Result</h5><p style="font-size:.82rem">Real accuracy on extreme delay detection: 73% → 91%. The metric change alone revealed the original model was completely useless.</p></div>
+        <div class="cs-cell"><h5>Key Lesson</h5><p style="font-size:.82rem">Skewed data + wrong metric = false confidence. Always check class distribution and choose metrics that reflect real business goals, not just overall accuracy.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 12: CODE LAB ==================== -->
+<div class="sticky-title" id="code"><span>12</span> Advanced Code Lab</div>
+<section class="section fade-in">
+  <div class="section-header">
+    <div class="section-tag">Mastery</div>
+    <h2>From Beginner to Expert: Code Lab</h2>
+    <p class="section-desc">Four complete code examples spanning difficulty levels — write your first preprocessing pipeline and build up to a production-ready automated system.</p>
+  </div>
+
+  <h3 style="font-weight:700;margin-bottom:1rem">Level 1 — Beginner: Your First Preprocessing Pipeline</h3>
+  <div class="diff diff-easy">Easy</div>
+  <div class="code-block">
+    <div class="code-label">Complete Beginner Pipeline</div>
+    <pre><span class="comment"># LEVEL 1: Clean a simple dataset from scratch</span>
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># Create sample messy dataset</span>
+data = {
+    <span class="string">'Name'</span>: [<span class="string">'Alice'</span>,<span class="string">'Bob'</span>,<span class="string">'Alice'</span>,<span class="string">'Charlie'</span>,<span class="string">'Dave'</span>,<span class="string">'Eve'</span>],
+    <span class="string">'Age'</span>: [<span class="number">25</span>, <span class="number">30</span>, <span class="number">25</span>, <span class="keyword">None</span>, <span class="number">200</span>, <span class="number">28</span>],  <span class="comment"># NaN + outlier 200</span>
+    <span class="string">'Salary'</span>: [<span class="number">50000</span>, <span class="number">60000</span>, <span class="number">50000</span>, <span class="number">55000</span>, <span class="keyword">None</span>, <span class="number">45000</span>],
+    <span class="string">'Gender'</span>: [<span class="string">'F'</span>,<span class="string">'M'</span>,<span class="string">'F'</span>,<span class="string">'M'</span>,<span class="string">'M'</span>,<span class="keyword">None</span>],  <span class="comment"># Missing category</span>
+}
+df = pd.DataFrame(data)
+
+<span class="comment"># Step 1: Inspect</span>
+print(df.info()); print(df.isnull().sum())
+
+<span class="comment"># Step 2: Remove duplicates</span>
+df.drop_duplicates(inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Step 3: Handle missing — median for numeric, mode for categorical</span>
+df[<span class="string">'Age'</span>].fillna(df[<span class="string">'Age'</span>].median(), inplace=<span class="keyword">True</span>)
+df[<span class="string">'Salary'</span>].fillna(df[<span class="string">'Salary'</span>].mean(), inplace=<span class="keyword">True</span>)
+df[<span class="string">'Gender'</span>].fillna(df[<span class="string">'Gender'</span>].mode()[<span class="number">0</span>], inplace=<span class="keyword">True</span>)
+
+<span class="comment"># Step 4: Sanity check — remove impossible age</span>
+df = df[df[<span class="string">'Age'</span>].between(<span class="number">0</span>, <span class="number">120</span>)]
+
+<span class="comment"># Step 5: Encode gender</span>
+df[<span class="string">'Gender_enc'</span>] = (df[<span class="string">'Gender'</span>] == <span class="string">'M'</span>).astype(int)
+
+print(<span class="string">"\nClean data:"</span>); print(df)</pre>
+  </div>
+
+  <h3 style="font-weight:700;margin:2rem 0 .5rem">Level 2 — Medium: Real Dataset Cleaning</h3>
+  <div class="diff diff-med">Medium</div>
+  <div class="code-block">
+    <div class="code-label">Loan Dataset — Full Pipeline</div>
+    <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler, LabelEncoder
+<span class="keyword">from</span> sklearn.impute <span class="keyword">import</span> SimpleImputer
+<span class="keyword">import</span> seaborn <span class="keyword">as</span> sns
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+
+df = pd.read_csv(<span class="string">'loan_data.csv'</span>)
+
+<span class="comment"># === STEP 1: Explore ===</span>
+print(<span class="string">"Shape:"</span>, df.shape)
+missing_pct = (df.isnull().sum() / len(df) * <span class="number">100</span>).sort_values(ascending=<span class="keyword">False</span>)
+print(<span class="string">"Missing %:
+"</span>, missing_pct[missing_pct > <span class="number">0</span>])
+
+<span class="comment"># === STEP 2: Fill categorical missing values with mode ===</span>
+cat_cols = df.select_dtypes(<span class="string">'object'</span>).columns
+<span class="keyword">for</span> col <span class="keyword">in</span> cat_cols:
+    df[col].fillna(df[col].mode()[<span class="number">0</span>], inplace=<span class="keyword">True</span>)
+
+<span class="comment"># === STEP 3: Fill numerical missing values with median ===</span>
+num_cols = df.select_dtypes([<span class="string">'float64'</span>,<span class="string">'int64'</span>]).columns
+imputer = SimpleImputer(strategy=<span class="string">'median'</span>)
+df[num_cols] = imputer.fit_transform(df[num_cols])
+
+<span class="comment"># === STEP 4: Fix mixed type — Dependents "3+" → 3 ===</span>
+df[<span class="string">'Dependents'</span>] = df[<span class="string">'Dependents'</span>].replace(<span class="string">'3+'</span>,<span class="string">'3'</span>).astype(int)
+
+<span class="comment"># === STEP 5: Outlier removal (IQR on income) ===</span>
+<span class="keyword">for</span> col <span class="keyword">in</span> [<span class="string">'ApplicantIncome'</span>,<span class="string">'CoapplicantIncome'</span>]:
+    Q1, Q3 = df[col].quantile(<span class="number">0.25</span>), df[col].quantile(<span class="number">0.75</span>)
+    IQR = Q3 - Q1
+    df = df[(df[col] >= Q1-<span class="number">1.5</span>*IQR) & (df[col] <= Q3+<span class="number">1.5</span>*IQR)]
+
+<span class="comment"># === STEP 6: Encode categoricals ===</span>
+df = pd.get_dummies(df, columns=[<span class="string">'Gender'</span>,<span class="string">'Married'</span>,<span class="string">'Education'</span>], drop_first=<span class="keyword">True</span>)
+le = LabelEncoder()
+df[<span class="string">'Property_Area'</span>] = le.fit_transform(df[<span class="string">'Property_Area'</span>])
+
+<span class="comment"># === STEP 7: Scale numerical features ===</span>
+scaler = StandardScaler()
+scale_cols = [<span class="string">'ApplicantIncome'</span>,<span class="string">'CoapplicantIncome'</span>,<span class="string">'LoanAmount'</span>]
+df[scale_cols] = scaler.fit_transform(df[scale_cols])
+
+print(<span class="string">"\nFinal shape:"</span>, df.shape)
+print(<span class="string">"Missing values:"</span>, df.isnull().sum().sum())</pre>
+  </div>
+
+  <h3 style="font-weight:700;margin:2rem 0 .5rem">Level 3 — Sub-Hard: Production Pipeline with sklearn Pipeline</h3>
+  <div class="diff diff-hard">Sub-Hard</div>
+  <div class="code-block">
+    <div class="code-label">sklearn Pipeline — Production Grade</div>
+    <pre><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline
+<span class="keyword">from</span> sklearn.compose <span class="keyword">import</span> ColumnTransformer
+<span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler, OneHotEncoder
+<span class="keyword">from</span> sklearn.impute <span class="keyword">import</span> SimpleImputer
+
+<span class="comment"># Define column types</span>
+numeric_features = [<span class="string">'ApplicantIncome'</span>,<span class="string">'LoanAmount'</span>,<span class="string">'Loan_Amount_Term'</span>]
+categorical_features = [<span class="string">'Gender'</span>,<span class="string">'Married'</span>,<span class="string">'Education'</span>,<span class="string">'Property_Area'</span>]
+
+<span class="comment"># Numeric transformer: impute → scale</span>
+numeric_transformer = Pipeline(steps=[
+    (<span class="string">'imputer'</span>, SimpleImputer(strategy=<span class="string">'median'</span>)),
+    (<span class="string">'scaler'</span>, StandardScaler())
+])
+
+<span class="comment"># Categorical transformer: impute → encode</span>
+categorical_transformer = Pipeline(steps=[
+    (<span class="string">'imputer'</span>, SimpleImputer(strategy=<span class="string">'most_frequent'</span>)),
+    (<span class="string">'encoder'</span>, OneHotEncoder(handle_unknown=<span class="string">'ignore'</span>, drop=<span class="string">'first'</span>))
+])
+
+<span class="comment"># Combine into ColumnTransformer</span>
+preprocessor = ColumnTransformer(transformers=[
+    (<span class="string">'num'</span>, numeric_transformer, numeric_features),
+    (<span class="string">'cat'</span>, categorical_transformer, categorical_features)
+])
+
+<span class="comment"># Full pipeline: preprocess → model</span>
+<span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier
+<span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split
+
+X = df.drop(<span class="string">'Loan_Status'</span>, axis=<span class="number">1</span>)
+y = df[<span class="string">'Loan_Status'</span>]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.2</span>)
+
+full_pipeline = Pipeline(steps=[
+    (<span class="string">'preprocessor'</span>, preprocessor),
+    (<span class="string">'classifier'</span>, RandomForestClassifier(n_estimators=<span class="number">100</span>))
+])
+
+full_pipeline.fit(X_train, y_train)
+print(<span class="string">"Accuracy:"</span>, full_pipeline.score(X_test, y_test))
+
+<span class="comment"># Save for production deployment</span>
+<span class="keyword">import</span> joblib
+joblib.dump(full_pipeline, <span class="string">'loan_pipeline.pkl'</span>)
+<span class="comment"># Load: pipeline = joblib.load('loan_pipeline.pkl')</span></pre>
+  </div>
+
+  <h3 style="font-weight:700;margin:2rem 0 .5rem">Level 4 — Expert: Custom Transformers & Automated Profiling</h3>
+  <div class="diff diff-expert">Expert — Level 4</div>
+  <div class="code-block">
+    <div class="code-label">Custom Transformer + Auto Data Profiler</div>
+    <pre><span class="keyword">from</span> sklearn.base <span class="keyword">import</span> BaseEstimator, TransformerMixin
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="comment"># Custom transformer: outlier capper using IQR</span>
+<span class="keyword">class</span> <span class="func">IQROutlierCapper</span>(BaseEstimator, TransformerMixin):
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, factor=<span class="number">1.5</span>):
+        self.factor = factor
+        self.lower_bounds_ = {}
+        self.upper_bounds_ = {}
+    
+    <span class="keyword">def</span> <span class="func">fit</span>(self, X, y=<span class="keyword">None</span>):
+        X = pd.DataFrame(X)
+        <span class="keyword">for</span> col <span class="keyword">in</span> X.columns:
+            Q1, Q3 = X[col].quantile(<span class="number">0.25</span>), X[col].quantile(<span class="number">0.75</span>)
+            IQR = Q3 - Q1
+            self.lower_bounds_[col] = Q1 - self.factor * IQR
+            self.upper_bounds_[col] = Q3 + self.factor * IQR
+        <span class="keyword">return</span> self
+    
+    <span class="keyword">def</span> <span class="func">transform</span>(self, X, y=<span class="keyword">None</span>):
+        X = pd.DataFrame(X).copy()
+        <span class="keyword">for</span> col <span class="keyword">in</span> X.columns:
+            X[col] = np.clip(X[col], 
+                             self.lower_bounds_[col], 
+                             self.upper_bounds_[col])
+        <span class="keyword">return</span> X
+
+<span class="comment"># Automated data quality report</span>
+<span class="keyword">def</span> <span class="func">data_quality_report</span>(df):
+    report = []
+    <span class="keyword">for</span> col <span class="keyword">in</span> df.columns:
+        Q1, Q3 = df[col].quantile([<span class="number">0.25</span>, <span class="number">0.75</span>]) <span class="keyword">if</span> df[col].dtype != <span class="string">'object'</span> <span class="keyword">else</span> (<span class="keyword">None</span>, <span class="keyword">None</span>)
+        IQR = Q3 - Q1 <span class="keyword">if</span> Q1 <span class="keyword">is not None</span> <span class="keyword">else</span> <span class="keyword">None</span>
+        outliers = len(df[(df[col] < Q1 - <span class="number">1.5</span>*IQR) | (df[col] > Q3 + <span class="number">1.5</span>*IQR)]) <span class="keyword">if</span> IQR <span class="keyword">else</span> <span class="string">'N/A'</span>
+        report.append({
+            <span class="string">'Column'</span>: col,
+            <span class="string">'Type'</span>: str(df[col].dtype),
+            <span class="string">'Missing %'</span>: f<span class="string">"{df[col].isnull().mean()*100:.1f}%"</span>,
+            <span class="string">'Unique Values'</span>: df[col].nunique(),
+            <span class="string">'Outliers (IQR)'</span>: outliers
+        })
+    <span class="keyword">return</span> pd.DataFrame(report)
+
+print(data_quality_report(df).to_string())</pre>
+  </div>
+
+  <!-- FINAL CHART -->
+  <div class="chart-wrap" style="margin-top:2rem">
+    <h4>Preprocessing Impact on Model Accuracy — Cumulative Effect</h4>
+    <canvas id="impactChart" height="200"></canvas>
+  </div>
+
+  <!-- FINAL QUIZ -->
+  <div class="quiz-box" style="margin-top:2rem">
+    <h4>🎓 Mastery Check: Which preprocessing steps are mandatory for a KNN model but not for a Decision Tree?</h4>
+    <label class="quiz-option" id="q3a" onclick="checkQ('q3a','wrong','q3')">Missing value handling and duplicate removal.</label>
+    <label class="quiz-option" id="q3b" onclick="checkQ('q3b','correct','q3')">Feature scaling (KNN uses distance metrics affected by scale; Decision Trees split on thresholds, making them scale-invariant).</label>
+    <label class="quiz-option" id="q3c" onclick="checkQ('q3c','wrong','q3')">Outlier removal and one-hot encoding.</label>
+    <div id="q3-fb" style="margin-top:.75rem;font-size:.88rem;display:none;color:#166534;font-weight:500">✓ Excellent! KNN computes Euclidean distance — a feature ranging 0-100000 will completely dominate one ranging 0-5. Trees use if-else splits that are scale-independent.</div>
+  </div>
+
+  <!-- CHEAT SHEET -->
+  <div style="background:var(--ink);color:white;border-radius:16px;padding:2.5rem;margin-top:3rem">
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:1.5rem;color:var(--highlight)">📋 The Ultimate Data Preprocessing Cheat Sheet</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem">
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:1rem">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:.5rem;font-size:.85rem">MISSING VALUES</div>
+        <div style="font-size:.78rem;line-height:1.8;color:rgba(255,255,255,.7)">
+          &gt;50% column → drop column<br>
+          Numerical → median/mean<br>
+          Categorical → mode<br>
+          Time-series → ffill/bfill<br>
+          Important missing → SimpleImputer
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:1rem">
+        <div style="color:#82aaff;font-weight:700;margin-bottom:.5rem;font-size:.85rem">OUTLIERS</div>
+        <div style="font-size:.78rem;line-height:1.8;color:rgba(255,255,255,.7)">
+          Detect: boxplot + describe()<br>
+          Normal data → Z-score (±3)<br>
+          Skewed data → IQR method<br>
+          Remove OR cap (Winsorize)<br>
+          Check if genuine event first!
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:1rem">
+        <div style="color:#c3e88d;font-weight:700;margin-bottom:.5rem;font-size:.85rem">ENCODING</div>
+        <div style="font-size:.78rem;line-height:1.8;color:rgba(255,255,255,.7)">
+          Nominal (no order) → One-Hot<br>
+          Ordinal (has order) → Ordinal<br>
+          Binary → 0/1 mapping<br>
+          High cardinality → Frequency<br>
+          Target variable → LabelEncoder
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:1rem">
+        <div style="color:#ffcb6b;font-weight:700;margin-bottom:.5rem;font-size:.85rem">SCALING</div>
+        <div style="font-size:.78rem;line-height:1.8;color:rgba(255,255,255,.7)">
+          SVM/PCA/LR → StandardScaler<br>
+          Neural nets/KNN → MinMaxScaler<br>
+          Outliers present → RobustScaler<br>
+          Tree models → No scaling needed<br>
+          Always fit on train only!
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:1rem">
+        <div style="color:#c792ea;font-weight:700;margin-bottom:.5rem;font-size:.85rem">TRANSFORMATION</div>
+        <div style="font-size:.78rem;line-height:1.8;color:rgba(255,255,255,.7)">
+          Right skew → log1p (add 1!)<br>
+          Moderate skew → sqrt<br>
+          Mixed sign → Yeo-Johnson<br>
+          Find best → PowerTransformer<br>
+          Remove outliers first!
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:1rem">
+        <div style="color:#f78c6c;font-weight:700;margin-bottom:.5rem;font-size:.85rem">GOLDEN RULES</div>
+        <div style="font-size:.78rem;line-height:1.8;color:rgba(255,255,255,.7)">
+          Always explore before cleaning<br>
+          Domain knowledge is critical<br>
+          Fit transformers on train only<br>
+          Document every decision made<br>
+          Sanity check the final output
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="background:var(--ink);color:rgba(255,255,255,.4);text-align:center;padding:2rem;font-size:.78rem;margin-top:4rem">
+  <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:white;margin-bottom:.5rem">Data Preprocessing: Complete Mastery Guide</div>
+  Covering: upGrad Lecture Notes · Live Session Agenda · Google Play Store Case Study Notebook · Video Transcript
+  <div style="margin-top:.75rem">Built with expertise from Pandas · Scikit-learn · Seaborn · NumPy · Matplotlib</div>
+</footer>
+
+<script>
+// ===================== CHARTS =====================
+window.addEventListener('DOMContentLoaded', () => {
+  // Time distribution chart
+  new Chart(document.getElementById('timeChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Data Cleaning & Preprocessing', 'Feature Engineering', 'Model Building', 'Evaluation & Tuning', 'Deployment'],
+      datasets: [{
+        data: [70, 10, 10, 6, 4],
+        backgroundColor: ['#e8452c','#d97706','#2563eb','#16a34a','#9333ea'],
+        borderWidth: 0
+      }]
+    },
+    options: {plugins:{legend:{position:'right'}}}
+  });
+
+  // Data types chart
+  new Chart(document.getElementById('dataTypesChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Category','Rating','Reviews','Size','Installs','Type','Price','Content Rating','Genres','Android Ver'],
+      datasets: [{
+        label: 'Categorical',
+        data: [1,0,0,0,0,1,0,1,1,1],
+        backgroundColor: '#2563eb'
+      },{
+        label: 'Numerical',
+        data: [0,1,1,1,1,0,1,0,0,0],
+        backgroundColor: '#16a34a'
+      },{
+        label: 'Mixed/Text',
+        data: [0,0,0,1,1,0,1,0,1,1],
+        backgroundColor: '#e8452c'
+      }]
+    },
+    options: {scales:{x:{stacked:true},y:{stacked:true}},plugins:{legend:{position:'bottom'}}}
+  });
+
+  // Missing value decision chart (radar)
+  new Chart(document.getElementById('missingDecisionChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Missing %', 'Column Importance', 'Data Size', 'Distribution Shape', 'Domain Context'],
+      datasets: [{
+        label: 'When to Delete Row/Col',
+        data: [80,20,80,40,30],
+        backgroundColor: 'rgba(232,69,44,.15)',
+        borderColor: '#e8452c'
+      },{
+        label: 'When to Impute',
+        data: [30,80,40,70,80],
+        backgroundColor: 'rgba(37,99,235,.15)',
+        borderColor: '#2563eb'
+      }]
+    },
+    options: {scales:{r:{min:0,max:100}},plugins:{legend:{position:'bottom'}}}
+  });
+
+  // Outlier sensitivity chart
+  new Chart(document.getElementById('outlierSensChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Linear Regression','KNN','SVM','Logistic Regression','Naive Bayes','Decision Tree','Random Forest','Gradient Boosting'],
+      datasets: [{
+        label: 'Sensitivity to Outliers (1=Low, 10=High)',
+        data: [9,8,7,6,4,2,2,3],
+        backgroundColor: (ctx) => ctx.parsed.y > 6 ? '#e8452c' : ctx.parsed.y > 4 ? '#d97706' : '#16a34a'
+      }]
+    },
+    options: {indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{max:10}}}
+  });
+
+  // Encoding chart
+  new Chart(document.getElementById('encodingChart'), {
+    type: 'polarArea',
+    data: {
+      labels: ['One-Hot (Nominal)', 'Ordinal (Ordered)', 'Label (Target/Tree)', 'Binary (2-class)', 'Frequency (High-Card)', 'Target Encoding'],
+      datasets: [{
+        data: [35,20,20,10,8,7],
+        backgroundColor: ['rgba(232,69,44,.7)','rgba(37,99,235,.7)','rgba(22,163,74,.7)','rgba(217,119,6,.7)','rgba(147,51,234,.7)','rgba(236,72,153,.7)']
+      }]
+    },
+    options: {plugins:{legend:{position:'right'}}}
+  });
+
+  // Scaling comparison chart
+  new Chart(document.getElementById('scalingChart'), {
+    type: 'line',
+    data: {
+      labels: ['0','10k','20k','30k','40k','50k','60k','70k','80k'],
+      datasets: [{
+        label: 'Original (thousands)',
+        data: [45,120,200,160,95,55,30,15,8],
+        borderColor: '#e8452c',
+        tension: 0.4,
+        fill: true,
+        backgroundColor: 'rgba(232,69,44,.1)'
+      },{
+        label: 'After Standardization',
+        data: [30,80,140,110,65,38,20,10,5],
+        borderColor: '#2563eb',
+        tension: 0.4,
+        fill: false
+      },{
+        label: 'After Min-Max [0,1]',
+        data: [20,55,95,75,44,25,14,7,3],
+        borderColor: '#16a34a',
+        tension: 0.4,
+        fill: false
+      }]
+    },
+    options: {scales:{y:{title:{display:true,text:'Frequency'}}},plugins:{legend:{position:'bottom'}}}
+  });
+
+  // Transform chart
+  new Chart(document.getElementById('transformChart'), {
+    type: 'bar',
+    data: {
+      labels: ['0-5k','5-10k','10-20k','20-40k','40-80k','80-200k','200k+'],
+      datasets: [{
+        label: 'Original (Right Skewed)',
+        data: [10,30,80,200,120,40,5],
+        backgroundColor: 'rgba(232,69,44,.7)',
+        yAxisID: 'y'
+      },{
+        label: 'After Log Transform (More Normal)',
+        data: [20,65,130,150,100,50,15],
+        backgroundColor: 'rgba(37,99,235,.7)',
+        yAxisID: 'y'
+      }]
+    },
+    options: {plugins:{legend:{position:'bottom'}}}
+  });
+
+  // Impact chart
+  new Chart(document.getElementById('impactChart'), {
+    type: 'line',
+    data: {
+      labels: ['Raw Data','+ Fix Types','+ Missing Val','+ Outliers','+ Encoding','+ Scaling','+ Transform','+ Sanity'],
+      datasets: [{
+        label: 'Model Accuracy %',
+        data: [52, 58, 67, 72, 79, 83, 87, 89],
+        borderColor: '#16a34a',
+        backgroundColor: 'rgba(22,163,74,.1)',
+        tension: 0.4,
+        fill: true,
+        pointRadius: 6,
+        pointBackgroundColor: '#16a34a'
+      }]
+    },
+    options: {scales:{y:{min:40,max:100,title:{display:true,text:'Accuracy %'}}},plugins:{legend:{position:'bottom'}}}
+  });
+});
+
+// ===================== TABS =====================
+function openTab(event, tabId) {
+  const parent = event.target.closest('.tabs');
+  parent.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===================== INTERACTIVE DEMOS =====================
+let gridData = [];
+function initGrid() {
+  gridData = [];
+  for (let r = 0; r < 6; r++) {
+    for (let c = 0; c < 6; c++) {
+      gridData.push({ r, c, missing: Math.random() < 0.18, filled: false });
+    }
+  }
+  renderGrid();
+}
+function renderGrid() {
+  const grid = document.getElementById('demo-grid');
+  if (!grid) return;
+  const missCount = gridData.filter(d => d.missing && !d.filled).length;
+  document.getElementById('miss-count').textContent = missCount;
+  document.getElementById('miss-pct').textContent = (missCount / gridData.length * 100).toFixed(0);
+  grid.innerHTML = gridData.map(d => {
+    let cls = d.missing && !d.filled ? 'cell-miss' : d.filled ? 'cell-filled' : 'cell-ok';
+    let val = d.missing && !d.filled ? 'NaN' : d.filled ? '~μ' : Math.floor(Math.random()*100);
+    return `<div class="demo-cell ${cls}">${val}</div>`;
+  }).join('');
+}
+function fillMissing() {
+  gridData.forEach(d => { if (d.missing) d.filled = true; });
+  renderGrid();
+}
+function resetGrid() {
+  initGrid();
+}
+
+// DOT PLOT
+let dotData = [];
+function initDots() {
+  dotData = [];
+  const normal = Array.from({length: 40}, () => Math.floor(20 + Math.random() * 60));
+  const outliers = [2, 4, 95, 98, 102, 3];
+  normal.forEach(v => dotData.push({val:v, type:'normal', removed:false}));
+  outliers.forEach(v => dotData.push({val:v, type:'outlier', removed:false}));
+  renderDots();
+}
+function renderDots() {
+  const plot = document.getElementById('dot-plot');
+  if (!plot) return;
+  plot.innerHTML = dotData.filter(d => !d.removed).map(d => 
+    `<div class="dot dot-${d.type}" title="Value: ${d.val}"></div>`
+  ).join('');
+}
+function removeOutlierDots() {
+  const vals = dotData.map(d => d.val);
+  const q1 = percentile(vals, 25), q3 = percentile(vals, 75);
+  const iqr = q3 - q1;
+  const lb = q1 - 1.5 * iqr, ub = q3 + 1.5 * iqr;
+  dotData.forEach(d => { if (d.val < lb || d.val > ub) d.removed = true; });
+  renderDots();
+}
+function resetDots() { initDots(); }
+function percentile(arr, p) {
+  const sorted = [...arr].sort((a,b)=>a-b);
+  const idx = (p/100)*(sorted.length-1);
+  return sorted[Math.floor(idx)];
+}
+
+// ===================== QUIZ =====================
+function checkQ(optId, type, qId) {
+  document.querySelectorAll(`#${optId}`).forEach(() => {});
+  const opt = document.getElementById(optId);
+  if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+  opt.classList.add(type === 'correct' ? 'correct' : 'wrong');
+  if (type === 'correct') {
+    document.getElementById(`${qId}-fb`).style.display = 'block';
+  }
+}
+
+// ===================== NAV ACTIVE =====================
+function updateNav() {
+  const sections = ['intro','types','pipeline','missing','outliers','encoding','scaling','duplicates','transform','sanity','casestudy','code'];
+  const scrollY = window.scrollY + 100;
+  let current = sections[0];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top + window.scrollY <= scrollY) current = id;
+  });
+  document.querySelectorAll('.nav a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
+  });
+}
+
+// ===================== FADE IN =====================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.05});
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+window.addEventListener('scroll', updateNav);
+window.addEventListener('load', () => { initGrid(); initDots(); updateNav(); });
+</script>
+</body>
+</html>
